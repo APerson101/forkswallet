@@ -1,10 +1,12 @@
 import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/core/constants/asset_paths.dart';
 import 'package:arbor/views/screens/base/base_screen.dart';
+import 'package:arbor/views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'package:arbor/views/widgets/arbor_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class AddWalletCompleteScreen extends StatelessWidget {
   @override
@@ -13,7 +15,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
       color: ArborColors.green,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: ArborColors.green,
+          // backgroundColor: ArborColors.green,
           appBar: AppBar(
             centerTitle: true,
             title: Text(
@@ -21,7 +23,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
               style: TextStyle(color: ArborColors.white),
             ),
             automaticallyImplyLeading: false,
-            backgroundColor: ArborColors.green,
+            // backgroundColor: ArborColors.green,
           ),
           body: Container(
             padding: EdgeInsets.all(40),
@@ -37,6 +39,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
                   AssetPaths.walletCreated,
                   fit: BoxFit.cover,
                   height: 150.h,
+                  color: Get.isDarkMode ? Colors.white : Colors.black,
                 ),
                 Expanded(
                   flex: 3,
@@ -46,7 +49,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
                   'You are now responsible for keeping the wallet phrase safe. We cannot help you to recover your secret phrase',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: ArborColors.white,
+                    // color: ArborColors.white,
                     fontWeight: FontWeight.w400,
                     fontSize: 14,
                   ),
@@ -56,7 +59,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
                   child: Container(),
                 ),
                 ArborButton(
-                  backgroundColor: ArborColors.deepGreen,
+                  // backgroundColor: ArborColors.deepGreen,
                   disabled: false,
                   loading: false,
                   title: 'Go Back',
@@ -68,11 +71,14 @@ class AddWalletCompleteScreen extends StatelessWidget {
                   height: 10,
                 ),
                 ArborButton(
-                  backgroundColor: ArborColors.deepGreen,
+                  // backgroundColor: ArborColors.deepGreen,
                   disabled: false,
                   loading: false,
                   title: 'I wrote down the secret phrase',
                   onPressed: () {
+                    ForksDashboardController _control = Get.find();
+                    _control.reloadWalletBalances();
+                    Get.back();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute<Widget>(

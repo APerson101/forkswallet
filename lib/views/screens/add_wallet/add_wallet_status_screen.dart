@@ -8,28 +8,33 @@ import 'package:arbor/views/widgets/phrase_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+//create fork of selected fork
 class AddWalletStatusScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CreateWalletProvider>(builder: (_, model, __) {
       return Container(
-        color: ArborColors.green,
+        // color: ArborColors.green,
         child: SafeArea(
           child: Scaffold(
-            backgroundColor: ArborColors.green,
+            // backgroundColor: ArborColors.green,
             appBar: AppBar(
               centerTitle: true,
               title: Text(
                 '${model.appBarTitle}',
-                style: TextStyle(color: ArborColors.white),
+                // style: TextStyle(),
               ),
               automaticallyImplyLeading: false,
-              backgroundColor: ArborColors.green,
+              // backgroundColor: ArborColors.green,
             ),
             body: Container(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: model.createWalletStatus == Status.SUCCESS?1:20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical:
+                      model.createWalletStatus == Status.SUCCESS ? 1 : 20),
               child: Builder(
                 builder: (_) {
                   if (model.createWalletStatus == Status.LOADING) {
@@ -71,7 +76,7 @@ class AddWalletStatusScreen extends StatelessWidget {
         Text(
           'New Wallet',
           style: TextStyle(
-            color: ArborColors.white,
+            // color: ArborColors.white,
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
@@ -79,7 +84,7 @@ class AddWalletStatusScreen extends StatelessWidget {
         Text(
           'Generating new wallet...',
           style: TextStyle(
-            color: ArborColors.white,
+            // color: ArborColors.white,
             fontWeight: FontWeight.w400,
             fontSize: 14,
           ),
@@ -98,10 +103,12 @@ class AddWalletStatusScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Container(
             decoration: BoxDecoration(
-              color: ArborColors.logoGreen,
+              color: Get.theme.cardColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(
                   10,
@@ -118,21 +125,20 @@ class AddWalletStatusScreen extends StatelessWidget {
                     'We will not save or store this secret phrase. Write it down. Keep it safe.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: ArborColors.white,
+                      // color: ArborColors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-
                 ...model.phrasesList
                     .map(
                       (e) => PhraseText(
-                    itemNumber: e.index,
-                    word: e.phrase,
-                    visible: model.revealPhrase,
-                  ),
-                )
+                        itemNumber: e.index,
+                        word: e.phrase,
+                        visible: model.revealPhrase,
+                      ),
+                    )
                     .toList(),
                 SizedBox(
                   height: 20,
@@ -146,7 +152,7 @@ class AddWalletStatusScreen extends StatelessWidget {
               'Do not create a digital copy such as a screenshot, text file or email.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: ArborColors.white,
+                // color: ArborColors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -165,14 +171,13 @@ class AddWalletStatusScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
-                    color: ArborColors.black,
+                    // color: ArborColors.black,
                   ),
                 ),
                 trailing: Icon(Icons.copy),
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: "${model.seedPhrase}"));
-                  showSnackBar(
-                      context, 'Secret Phrase copied', ArborColors.deepGreen);
+                  showSnackBar(context, 'Secret Phrase copied');
                 },
               ),
             ),
@@ -189,7 +194,7 @@ class AddWalletStatusScreen extends StatelessWidget {
           ),
           ArborButton(
             disabled: !model.tappedRevealButton,
-            backgroundColor: ArborColors.deepGreen,
+            // backgroundColor: ArborColors.deepGreen,
             loading: false,
             title: 'Continue',
             onPressed: () async {
@@ -205,7 +210,9 @@ class AddWalletStatusScreen extends StatelessWidget {
               }
             },
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );
@@ -232,7 +239,7 @@ class AddWalletStatusScreen extends StatelessWidget {
         Text(
           'Oops!',
           style: TextStyle(
-            color: ArborColors.white,
+            // color: ArborColors.white,
             fontWeight: FontWeight.w600,
             fontSize: 24,
           ),
@@ -240,7 +247,7 @@ class AddWalletStatusScreen extends StatelessWidget {
         Text(
           '${model.errorMessage}',
           style: TextStyle(
-            color: ArborColors.white,
+            // color: ArborColors.white,
             fontWeight: FontWeight.w400,
             fontSize: 18,
           ),
@@ -250,7 +257,7 @@ class AddWalletStatusScreen extends StatelessWidget {
           child: Container(),
         ),
         ArborButton(
-          backgroundColor: ArborColors.logoGreen,
+          // backgroundColor: ArborColors.logoGreen,
           disabled: false,
           loading: false,
           title: 'Go Back',
@@ -263,12 +270,12 @@ class AddWalletStatusScreen extends StatelessWidget {
     );
   }
 
-  showSnackBar(BuildContext context, String message, Color color) {
+  showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("$message"),
         duration: Duration(milliseconds: 1000),
-        backgroundColor: color,
+        // backgroundColor: color,
         elevation: 2,
         padding: EdgeInsets.all(
           10,

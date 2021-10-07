@@ -1,6 +1,7 @@
 import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class PasswordBox extends StatelessWidget {
   final int? index;
@@ -21,7 +22,7 @@ class PasswordBox extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(20),
               ),
-              color: ArborColors.logoGreen,
+              color: Get.theme.backgroundColor,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -35,7 +36,7 @@ class PasswordBox extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: ArborColors.white,
+                    // color: ArborColors.white,
                   ),
                 ),
                 Expanded(
@@ -46,15 +47,17 @@ class PasswordBox extends StatelessWidget {
                       FilteringTextInputFormatter.deny(' '),
                     ],
                     showCursor: true,
-                    cursorColor: ArborColors.white,
+                    // cursorColor: ArborColors.white,
                     onChanged: onChanged,
                     keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: ArborColors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                     decoration: InputDecoration(
                       isCollapsed: true,
                       contentPadding: EdgeInsets.all(16),
                       hintText: '...',
-                      hintStyle: TextStyle(color: ArborColors.white),
+                      // hintStyle: TextStyle(color: ArborColors.white),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.zero,
@@ -76,7 +79,7 @@ class PasswordBox extends StatelessWidget {
                   '$errorMessage',
                   style: TextStyle(
                     fontSize: 12,
-                    color: ArborColors.errorRed,
+                    // color: ArborColors.errorRed,
                   ),
                 ),
               )),

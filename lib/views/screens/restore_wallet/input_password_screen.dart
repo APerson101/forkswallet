@@ -21,9 +21,9 @@ class InputPasswordScreen extends StatelessWidget {
           }
         });
         return Scaffold(
-          backgroundColor: ArborColors.green,
+          // backgroundColor: ArborColors.green,
           appBar: AppBar(
-            backgroundColor: ArborColors.green,
+            // backgroundColor: ArborColors.green,
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
@@ -36,9 +36,12 @@ class InputPasswordScreen extends StatelessWidget {
               },
               icon: Icon(Icons.arrow_back),
             ),
-            title: Text('Restore Wallet',style: TextStyle(
-              color: ArborColors.white,
-            ),),
+            title: Text(
+              'Restore Wallet',
+              style: TextStyle(
+                  // color: ArborColors.white,
+                  ),
+            ),
           ),
           body: HideKeyboardContainer(
             child: Container(
@@ -54,7 +57,7 @@ class InputPasswordScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: ArborColors.white,
+                        // color: ArborColors.white,
                       ),
                     ),
                   ),
@@ -97,7 +100,7 @@ class InputPasswordScreen extends StatelessWidget {
           PasswordBox(
             index: 1,
             errorMessage: model.errorMessage1,
-            onChanged: (v){
+            onChanged: (v) {
               model.setFirstPassword(v.trim());
             },
           ),
@@ -127,7 +130,7 @@ class InputPasswordScreen extends StatelessWidget {
               ),
               Expanded(
                 child: ArborButton(
-                  backgroundColor: ArborColors.deepGreen,
+                  // backgroundColor: ArborColors.deepGreen,
                   disabled: !model.firstBatchButtonIsDisabled,
                   title: 'Next',
                   onPressed: () {
@@ -180,7 +183,7 @@ class InputPasswordScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: ArborButton(
-                  backgroundColor: ArborColors.deepGreen,
+                  // backgroundColor: ArborColors.deepGreen,
                   title: 'Previous',
                   onPressed: () {
                     model.back();
@@ -193,7 +196,7 @@ class InputPasswordScreen extends StatelessWidget {
               ),
               Expanded(
                 child: ArborButton(
-                  backgroundColor: ArborColors.deepGreen,
+                  // backgroundColor: ArborColors.deepGreen,
                   disabled: !model.secondBatchButtonIsDisabled,
                   title: 'Next',
                   onPressed: () {

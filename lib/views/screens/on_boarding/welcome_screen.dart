@@ -4,6 +4,7 @@ import 'package:arbor/views/screens/base/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import '../../../core/constants/arbor_colors.dart';
 import '../../../core/constants/asset_paths.dart';
@@ -27,7 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ArborColors.green,
+      // backgroundColor: ArborColors.green,
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
         child: _WelcomeScreenBody(
@@ -53,6 +54,7 @@ class _WelcomeScreenBody extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.h),
           child: SvgPicture.asset(
             AssetPaths.safeWallet,
+            color: Get.isDarkMode ? Colors.white : Colors.black,
             height: 0.3.sh,
           ),
         ),
@@ -64,7 +66,7 @@ class _WelcomeScreenBody extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 24.sp,
-            color: Colors.white,
+            // color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -76,14 +78,14 @@ class _WelcomeScreenBody extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16.sp,
-            color: Colors.white,
+            // color: Colors.white,
             fontWeight: FontWeight.w400,
           ),
           softWrap: true,
         ),
         Spacer(),
         ArborButton(
-          backgroundColor: ArborColors.deepGreen,
+          // backgroundColor: ArborColors.deepGreen,
           title: 'Get Started',
           onPressed: () {
             if (isEmpty) {
@@ -102,7 +104,7 @@ class _WelcomeScreenBody extends StatelessWidget {
           height: 20.h,
         ),
         ArborButton(
-          backgroundColor: ArborColors.deepGreen,
+          // backgroundColor: ArborColors.deepGreen,
           title: 'I already have a wallet',
           onPressed: () {
             Navigator.push(context,

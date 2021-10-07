@@ -18,9 +18,9 @@ class PhraseText extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Text(
-            '${itemNumber+1} ',
+            '${itemNumber + 1} ',
             textAlign: TextAlign.right,
-            style: TextStyle(color: ArborColors.white, fontSize: 14),
+            style: TextStyle(fontSize: 14),
           ),
         ),
         Expanded(
@@ -28,7 +28,7 @@ class PhraseText extends StatelessWidget {
           child: Text(
             '${visible ? ' $word' : ' ********'}',
             textAlign: TextAlign.left,
-            style: TextStyle(color: ArborColors.white, fontSize: 14),
+            style: TextStyle(fontSize: 14),
           ),
         ),
       ],

@@ -14,20 +14,14 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ArborColors.green,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: ArborColors.green,
           appBar: AppBar(
-            backgroundColor: ArborColors.green,
-            centerTitle: true,
+              centerTitle: true,
               title: Text(
                 'Restore Wallet',
-                style: TextStyle(
-                  color: ArborColors.white,
-                ),
               ),
-              leading:  IconButton(
+              leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -35,13 +29,16 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
                   Icons.arrow_back,
                   color: ArborColors.white,
                 ),
-              )
-          ),
+              )),
           body: Container(
             child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 16,),
+              padding: EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
               children: [
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 // OptionCard(
                 //   iconPath: AssetPaths.qr,
                 //   description: 'Scan a QR Code on Arbor Wallet on another device.',
@@ -68,7 +65,9 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
                     );
                   },
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -77,5 +76,3 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
     );
   }
 }
-
-

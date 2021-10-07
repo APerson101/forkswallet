@@ -1,4 +1,5 @@
 import 'package:arbor/core/constants/arbor_colors.dart';
+import 'package:arbor/views/screens/home/forks_dashbord.dart';
 import 'package:arbor/views/screens/home/home_screen.dart';
 import 'package:arbor/views/screens/settings/settings_screen.dart';
 import 'package:arbor/views/widgets/layout/arbor_drawer.dart';
@@ -13,9 +14,8 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
-
   CrossFadeState currentState = CrossFadeState.showFirst;
-  String title="Arbor Wallet";
+  String title = "Arbor Wallet";
 
   @override
   Widget build(BuildContext context) {
@@ -30,38 +30,38 @@ class _BaseScreenState extends State<BaseScreen> {
         return Future.value(true);
       },
       child: Container(
-        color: ArborColors.green,
+        // color: ArborColors.green,
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
               title: Text(
                 '$title',
                 style: TextStyle(
-                  color: ArborColors.white,
-                ),
+                    // color: ArborColors.white,
+                    ),
               ),
               centerTitle: true,
-              backgroundColor: ArborColors.green,
+              // backgroundColor: ArborColors.green,
             ),
             drawer: ArborDrawer(
               onWalletsTapped: () {
-                if(currentState==CrossFadeState.showFirst){
+                if (currentState == CrossFadeState.showFirst) {
                   closeDrawer();
-                }else{
+                } else {
                   setState(() {
-                    title="Arbor Wallet";
-                    currentState=CrossFadeState.showFirst;
+                    title = "Arbor Wallet";
+                    currentState = CrossFadeState.showFirst;
                     closeDrawer();
                   });
                 }
               },
-              onSettingsTapped: (){
-                if(currentState==CrossFadeState.showSecond){
+              onSettingsTapped: () {
+                if (currentState == CrossFadeState.showSecond) {
                   closeDrawer();
-                }else{
+                } else {
                   setState(() {
-                    title="Settings";
-                    currentState=CrossFadeState.showSecond;
+                    title = "Settings";
+                    currentState = CrossFadeState.showSecond;
                     closeDrawer();
                   });
                 }
@@ -69,12 +69,15 @@ class _BaseScreenState extends State<BaseScreen> {
             ),
             body: Column(
               children: [
-                Expanded(child: AnimatedCrossFade(
-                  firstChild: HomeScreen(),
-                  secondChild: SettingsScreen(),
-                  crossFadeState: currentState,
-                  duration: const Duration(milliseconds: 300),
-                ),),
+                Expanded(
+                  child: AnimatedCrossFade(
+                    firstChild: ForksDashboard(),
+                    // firstChild: HomeScreen(),
+                    secondChild: SettingsScreen(),
+                    crossFadeState: currentState,
+                    duration: const Duration(milliseconds: 300),
+                  ),
+                ),
               ],
             ),
           ),
@@ -83,7 +86,7 @@ class _BaseScreenState extends State<BaseScreen> {
     );
   }
 
-  closeDrawer(){
+  closeDrawer() {
     Navigator.pop(context);
   }
 }

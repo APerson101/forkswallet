@@ -25,119 +25,116 @@ class NoEncryptionAvailableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ArborColors.green,
+      // color: ArborColors.green,
       child: Scaffold(
-          backgroundColor: ArborColors.green,
+          // backgroundColor: ArborColors.green,
           body: SafeArea(
-            top: true,
-            bottom: true,
-            left: true,
-            right: true,
-            child: Padding(
-                padding:
-                    EdgeInsets.fromLTRB(VIEW_PADDING, 0.0, VIEW_PADDING, 0.0),
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
+        top: true,
+        bottom: true,
+        left: true,
+        right: true,
+        child: Padding(
+            padding: EdgeInsets.fromLTRB(VIEW_PADDING, 0.0, VIEW_PADDING, 0.0),
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Flexible(
+                    flex: 2,
+                    child: Center(
+                      child: Image.asset(
+                        AssetPaths.logo,
+                      ),
+                    ),
+                  ),
+                  Spacer(
+                    flex: 2,
+                  ),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      // color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
                       Flexible(
-                        flex: 2,
-                        child: Center(
-                          child: Image.asset(
-                            AssetPaths.logo,
+                          child: InkWell(
+                        child: Text(
+                          errorString,
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            // color: Colors.white,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      Spacer(
-                        flex: 2,
-                      ),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: errorString));
+                        },
+                      )),
+                      InkWell(
+                        child: Icon(
+                          Icons.copy,
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Flexible(
-                              child: InkWell(
-                            child: Text(
-                              errorString,
-                              maxLines: 5,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            onTap: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: errorString));
-                            },
-                          )),
-                          InkWell(
-                            child: Icon(
-                              Icons.copy,
-                            ),
-                            onTap: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: errorString));
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Flexible(
-                            flex: 1,
-                            fit: FlexFit.tight,
-                            child: ArborButton(
-                              onPressed: () {
-                                deleteArborData(context);
-                              },
-                              title: 'Erase Arbor Data',
-                              backgroundColor: ArborColors.deepGreen,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Flexible(
-                            flex: 1,
-                            fit: FlexFit.tight,
-                            child: ArborButton(
-                              onPressed: () {
-                                launchURL(
-                                    context: context,
-                                    url: ArborConstants.baseWebsiteURL);
-                              },
-                              title: 'Contact Us',
-                              backgroundColor: ArborColors.deepGreen,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 40,
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: errorString));
+                        },
                       ),
                     ],
                   ),
-                )),
-          )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: ArborButton(
+                          onPressed: () {
+                            deleteArborData(context);
+                          },
+                          title: 'Erase Arbor Data',
+                          // backgroundColor: ArborColors.deepGreen,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: ArborButton(
+                          onPressed: () {
+                            launchURL(
+                                context: context,
+                                url: ArborConstants.baseWebsiteURL);
+                          },
+                          title: 'Contact Us',
+                          // backgroundColor: ArborColors.deepGreen,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                ],
+              ),
+            )),
+      )),
     );
   }
 
@@ -185,11 +182,13 @@ class NoEncryptionAvailableScreen extends StatelessWidget {
         return AlertDialog(
           title: Text(
             "Arbor Data Deleted",
-            style: TextStyle(fontSize: 14, color: ArborColors.black),
+            style: TextStyle(
+              fontSize: 14,
+            ),
           ),
           content: Text(
             "Your Arbor data was deleted. Please restart/reinstall the app.",
-            style: TextStyle(fontSize: 12, color: ArborColors.black),
+            style: TextStyle(fontSize: 12),
           ),
           actions: [
             TextButton(
