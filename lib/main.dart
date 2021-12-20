@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:arbor/core/constants/arbor_constants.dart';
-import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/core/providers/restore_wallet_provider.dart';
 import 'package:arbor/core/providers/settings_provider.dart';
 import 'package:arbor/models/models.dart';
 import 'package:arbor/themes/theme_controller.dart';
 import 'package:arbor/views/screens/base/base_screen.dart';
-import 'package:arbor/views/screens/forks_selector/fork_selector.dart';
 import 'package:arbor/views/screens/no_encryption_available_sccreen.dart';
 import 'package:arbor/core/providers/send_crypto_provider.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +20,6 @@ import 'core/providers/create_wallet_provider.dart';
 import 'models/blockchain.dart';
 import 'models/transaction.dart';
 import 'models/wallet.dart';
-import 'themes/arbor_theme_data.dart';
 import 'views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'views/screens/on_boarding/splash_screen.dart';
 
@@ -193,8 +190,6 @@ class _MyAppState extends State<MyApp> {
                         }));
               }
               return Container();
-
-              ;
             });
       }),
     );

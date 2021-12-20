@@ -25,7 +25,7 @@ class ForksDashboard extends StatelessWidget {
           child: CircularProgressIndicator.adaptive(),
         ));
       } else if (controller.loadingStatus.value == DashLoadingStatus.success) {
-        return ForksSummartView();
+        return ForksSummaryView();
       } else if (controller.loadingStatus.value == DashLoadingStatus.empty) {
         return const Center(
           child: Text(
@@ -49,7 +49,7 @@ class ForksDashboard extends StatelessWidget {
 
 enum Forks { Flora, XFL, DogeChia, Flax, XFX }
 
-class ForksSummartView extends StatelessWidget {
+class ForksSummaryView extends StatelessWidget {
   ForksDashboardController controller = Get.find();
 
   @override
