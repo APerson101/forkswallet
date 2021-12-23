@@ -124,7 +124,7 @@ class ForksSummaryView extends StatelessWidget {
                                             trailing: sum(e))
                                         .padding(top: 5, bottom: 5),
                                   ]),
-                                ))).padding(top: 20, bottom: 20);
+                                ))).padding(top: 20, bottom: 0);
                       }).toList(),
                     );
                   }))),

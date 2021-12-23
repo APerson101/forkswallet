@@ -14,7 +14,7 @@ class BaseScreen extends StatefulWidget {
 
 class _BaseScreenState extends State<BaseScreen> {
   CrossFadeState currentState = CrossFadeState.showFirst;
-  String title = "Arbor Wallet";
+  String title = "Chia Forks Wallet";
 
   @override
   Widget build(BuildContext context) {

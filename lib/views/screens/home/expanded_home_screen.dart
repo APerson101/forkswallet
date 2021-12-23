@@ -44,7 +44,7 @@ class _ExpandedHomeScreenState extends State<ExpandedHomeScreen> {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
               child: ExpandedHomePage(
                 index: widget.index,
                 wallet: widget.wallet,
