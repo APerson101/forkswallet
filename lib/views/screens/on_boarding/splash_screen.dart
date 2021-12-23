@@ -15,77 +15,82 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
-        child: Column(
-          children: [
-            Row(
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      child: SafeArea(
+        child: Scaffold(
+          body: Container(
+            padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+            child: Column(
               children: [
-                Expanded(
-                  child: Container(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(),
+                    ),
+                    DayNightSwitcherIcon(
+                        isDarkModeEnabled: Get.isDarkMode,
+                        onStateChanged: (value) async {
+                          print(value);
+                          value
+                              ? Get.changeTheme(ThemeData.dark())
+                              : Get.changeTheme(ThemeData(
+                                  brightness: Brightness.light,
+                                  primarySwatch: Colors.purple));
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setBool('theme', value ? true : false);
+                          ThemeController them = Get.find();
+                          them.dark.value = value;
+                        })
+                  ],
                 ),
-                DayNightSwitcherIcon(
-                    isDarkModeEnabled: Get.isDarkMode,
-                    onStateChanged: (value) async {
-                      print(value);
-                      value
-                          ? Get.changeTheme(ThemeData.dark())
-                          : Get.changeTheme(ThemeData(
-                              brightness: Brightness.light,
-                              primarySwatch: Colors.purple));
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setBool('theme', value ? true : false);
-                      ThemeController them = Get.find();
-                      them.dark.value = value;
-                    })
+                const Spacer(),
+                Image.asset(
+                  AssetPaths.logo,
+                  width: 0.2.sh,
+                  //height: MediaQuery.of(context).size.width * 0.5,
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                Text(
+                  'Secure & Easy to Use Light Chia Wallet',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    // color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Spacer(),
+                Obx(() {
+                  return ArborButton(
+                    backgroundColor: Get.theme.obs.value.backgroundColor,
+                    title: 'Get Started',
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OnBoardingScreen()));
+                    },
+                  );
+                }),
+                SizedBox(
+                  height: 20.h,
+                ),
+                ArborButton(
+                  // backgroundColor: ArborColors.deepGreen,
+                  title: 'I already have a wallet',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RestoreWalletScreen()));
+                  },
+                ),
               ],
             ),
-            const Spacer(),
-            Image.asset(
-              AssetPaths.logo,
-              width: 0.2.sh,
-              //height: MediaQuery.of(context).size.width * 0.5,
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Text(
-              'Secure & Easy to Use Light Chia Wallet',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24.sp,
-                // color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Spacer(),
-            Obx(() {
-              return ArborButton(
-                backgroundColor: Get.theme.obs.value.backgroundColor,
-                title: 'Get Started',
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OnBoardingScreen()));
-                },
-              );
-            }),
-            SizedBox(
-              height: 20.h,
-            ),
-            ArborButton(
-              // backgroundColor: ArborColors.deepGreen,
-              title: 'I already have a wallet',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RestoreWalletScreen()));
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

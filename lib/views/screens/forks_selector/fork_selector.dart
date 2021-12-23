@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/src/provider.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 enum Forks { Flora, DogeChia, Chia }
@@ -21,16 +20,30 @@ class ForksSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CreateWalletProvider>(builder: (_, model, __) {
-      return Scaffold(
-          appBar: AppBar(
-              title: Text("Select Chia fork",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 3,
-                      fontSize: 20))),
-          body: SingleChildScrollView(
-            child: Center(child: _getChildren(context, model)),
-          ));
+      return Container(
+        color: Get.theme.backgroundColor,
+        child: SafeArea(
+          child: Scaffold(
+              appBar: AppBar(
+                  elevation: 0,
+                  backgroundColor: Get.theme.backgroundColor,
+                  centerTitle: true,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back),
+                  ),
+                  title: Text("Select Chia fork",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3,
+                          fontSize: 20))),
+              body: SingleChildScrollView(
+                child: Center(child: _getChildren(context, model)),
+              )),
+        ),
+      );
     });
   }
 
@@ -39,7 +52,7 @@ class ForksSelector extends StatelessWidget {
     ;
 
     items.add(SizedBox(
-      height: 50,
+      height: 10,
     ));
     var forks = Forks.values.map((fork) {
       String logo = fork == Forks.DogeChia
@@ -74,17 +87,19 @@ class ForksSelector extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                 Container(
-                        width: 75,
-                        height: 75,
+                        width: 60,
+                        height: 60,
                         child: Image.asset(
                           'assets/images/$logo',
                           fit: BoxFit.contain,
-                          height: 50,
-                          width: 50,
+                          height: 40,
+                          width: 40,
                         )
                             .decorated(borderRadius: BorderRadius.circular(20))
-                            .paddingAll(4))
-                    .paddingOnly(left: 20, right: 20),
+                            .paddingOnly(top: 16, bottom: 16))
+                    .paddingOnly(
+                  left: 16,
+                ),
                 Text(describeEnum(fork),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,

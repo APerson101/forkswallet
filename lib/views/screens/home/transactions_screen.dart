@@ -71,7 +71,10 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
         maxChildSize: 1.0,
         builder: (context, scrollController) {
           return Scaffold(
+            //backgroundColor: Get.theme.backgroundColor,
             appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Get.theme.backgroundColor,
               leading: IconButton(
                 icon: Icon(
                   Icons.close,
@@ -90,6 +93,7 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
                   child: Align(
                     alignment: Alignment.bottomLeft,
                     child: FloatingActionButton(
+                      backgroundColor: Get.theme.backgroundColor,
                         heroTag: "refresh",
                         child: Icon(
                           Icons.refresh,
@@ -102,6 +106,7 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
+                    backgroundColor: Get.theme.backgroundColor,
                       heroTag: "btn2",
                       // splashColor: ArborColors.lightGreen,
                       // backgroundColor: ArborColors.deepGreen,
@@ -137,6 +142,7 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
                         width: 40,
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
+                          color: Get.theme.backgroundColor,
                         ),
                       ),
                     );
@@ -159,7 +165,7 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
                             ),
                             SizedBox(height: 30),
                             Flexible(
-                              flex: 2,
+                              flex: 5,
                               child: Text(
                                 'You have not sent or received anything yet. Go to a faucet and get some mojo.',
                                 textAlign: TextAlign.center,

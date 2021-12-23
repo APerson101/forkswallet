@@ -74,94 +74,101 @@ class _WalletReceiveScreenState extends State<WalletReceiveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.close,
+    return Container(
+      color: Get.theme.backgroundColor,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Get.theme.backgroundColor,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.close,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            // title: Text('Receive ${widget.wallet.fork.name} (${widget.wallet.name})'),
+            title: Text(
+              'Receive ${widget.wallet.blockchain.name}',
+            ),
+            centerTitle: true,
           ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        // title: Text('Receive ${widget.wallet.fork.name} (${widget.wallet.name})'),
-        title: Text(
-          'Receive ${widget.wallet.blockchain.name}',
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(
-            PASSWORD_PADDING, PASSWORD_PADDING, PASSWORD_PADDING, 0.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            RepaintBoundary(
-              key: globalKey,
-              child: Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      child: QrImage(
-                        data: widget.wallet.address,
-                        size: 250,
-                        version: QrVersions.auto,
-                        embeddedImage: AssetImage('assets/images/logo.png'),
-                        backgroundColor:
-                            Get.isDarkMode ? Colors.white : Colors.black,
-                        foregroundColor:
-                            !Get.isDarkMode ? Colors.white : Colors.black,
-                        gapless: false,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Tap to copy your ${widget.wallet.blockchain.name} light wallet address:',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                      child: ListTile(
-                        title: Text(
-                          widget.wallet.address,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14.0,
+          body: Container(
+            padding: EdgeInsets.fromLTRB(
+                PASSWORD_PADDING, PASSWORD_PADDING, PASSWORD_PADDING, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RepaintBoundary(
+                  key: globalKey,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          child: QrImage(
+                            data: widget.wallet.address,
+                            size: 250,
+                            version: QrVersions.auto,
+                            embeddedImage: AssetImage('assets/images/logo.png'),
+                            backgroundColor:
+                                Get.isDarkMode ? Colors.white : Colors.black,
+                            foregroundColor:
+                                !Get.isDarkMode ? Colors.white : Colors.black,
+                            gapless: false,
                           ),
                         ),
-                        trailing: Icon(Icons.copy),
-                        onTap: () {
-                          Clipboard.setData(
-                              ClipboardData(text: widget.wallet.address));
-                          showSnackBar(context, 'Wallet address copied',
-                              ArborColors.deepGreen);
-                        },
-                      ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Tap to copy your ${widget.wallet.blockchain.name} light wallet address:',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InkWell(
+                          child: ListTile(
+                            title: Text(
+                              widget.wallet.address,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                              ),
+                            ),
+                            trailing: Icon(Icons.copy),
+                            onTap: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: widget.wallet.address));
+                              showSnackBar(context, 'Wallet address copied',
+                                  ArborColors.deepGreen);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Spacer(),
+                ArborButton(
+                  onPressed: () {
+                    shareQrCode(widget.wallet.address);
+                  },
+                  title: 'Share',
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
             ),
-            Spacer(),
-            ArborButton(
-              onPressed: () {
-                shareQrCode(widget.wallet.address);
-              },
-              title: 'Share',
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -172,7 +179,7 @@ class _WalletReceiveScreenState extends State<WalletReceiveScreen> {
       SnackBar(
         content: Text("$message"),
         duration: Duration(milliseconds: 1000),
-        backgroundColor: color,
+        backgroundColor: Get.theme.backgroundColor,
         elevation: 2,
         padding: EdgeInsets.all(
           10,

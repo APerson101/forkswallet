@@ -2,6 +2,7 @@ import 'package:arbor/core/constants/asset_paths.dart';
 import 'package:arbor/views/screens/restore_wallet/input_password_screen.dart';
 // import 'package:arbor/views/unused/scanner_screen.dart';
 import 'package:arbor/views/widgets/cards/option_card.dart';
+import 'package:get/get.dart';
 import '../../../core/constants/arbor_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +15,11 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color:  Get.theme.backgroundColor,
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+              backgroundColor: Get.theme.backgroundColor,
               centerTitle: true,
               title: Text(
                 'Restore Wallet',

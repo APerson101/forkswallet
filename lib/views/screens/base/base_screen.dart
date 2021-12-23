@@ -1,10 +1,9 @@
-import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/views/screens/home/forks_dashbord.dart';
-import 'package:arbor/views/screens/home/home_screen.dart';
 import 'package:arbor/views/screens/settings/settings_screen.dart';
 import 'package:arbor/views/widgets/layout/arbor_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class BaseScreen extends StatefulWidget {
   const BaseScreen({Key? key}) : super(key: key);
@@ -30,10 +29,12 @@ class _BaseScreenState extends State<BaseScreen> {
         return Future.value(true);
       },
       child: Container(
-        // color: ArborColors.green,
+        color: Get.theme.backgroundColor,
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Get.theme.backgroundColor,
               title: Text(
                 '$title',
                 style: TextStyle(
@@ -49,7 +50,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   closeDrawer();
                 } else {
                   setState(() {
-                    title = "Arbor Wallet";
+                    title = "Chia Forks Wallet";
                     currentState = CrossFadeState.showFirst;
                     closeDrawer();
                   });

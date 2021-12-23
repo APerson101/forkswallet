@@ -40,31 +40,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         color: ArborColors.green,
         child: SafeArea(
           child: Scaffold(
-            // backgroundColor: ArborColors.green,
-            /*appBar: AppBar(
-                backgroundColor: ArborColors.green,
-                centerTitle: true,
-                title: Text(
-                  'Settings',
-                  style: TextStyle(
-                    color: ArborColors.white,
-                  ),
-                ),
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: ArborColors.white,
-                  ),
-                )),*/
             body: Container(
-              height: MediaQuery.of(context).size.height,
               margin: EdgeInsets.symmetric(vertical: 16),
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: ListView(

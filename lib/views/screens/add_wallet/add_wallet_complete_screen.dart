@@ -12,11 +12,13 @@ class AddWalletCompleteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ArborColors.green,
+      color: Get.theme.backgroundColor,
       child: SafeArea(
         child: Scaffold(
           // backgroundColor: ArborColors.green,
           appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Get.theme.backgroundColor,
             centerTitle: true,
             title: Text(
               'All Done',

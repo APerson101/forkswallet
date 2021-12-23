@@ -38,11 +38,14 @@ class ValueScreen extends StatelessWidget {
         }
       });
       return Container(
+        color: Get.theme.backgroundColor,
         child: HideKeyboardContainer(
           child: SafeArea(
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
+                elevation: 0,
+                backgroundColor: Get.theme.backgroundColor,
                 centerTitle: true,
                 leading: IconButton(
                   onPressed: () {

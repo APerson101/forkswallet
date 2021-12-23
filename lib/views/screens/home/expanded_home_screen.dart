@@ -2,6 +2,7 @@ import 'package:arbor/models/models.dart';
 import 'package:arbor/views/screens/home/expanded_home_page.dart';
 import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ExpandedHomeScreen extends StatefulWidget {
   final int index;
@@ -20,11 +21,12 @@ class _ExpandedHomeScreenState extends State<ExpandedHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: ArborColors.green,
+      color: Get.theme.backgroundColor,
       child: SafeArea(
         child: Scaffold(
-          // backgroundColor: ArborColors.green,
           appBar: AppBar(
+            backgroundColor: Get.theme.backgroundColor,
+            elevation: 0,
             title: Text(
               'Your Wallet',
             ),
