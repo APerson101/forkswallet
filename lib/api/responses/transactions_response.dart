@@ -6,9 +6,9 @@ class TransactionListResponse {
   TransactionListResponse({this.transactions});
 
   TransactionListResponse.fromJson(Map<String, dynamic> json) {
-    if (json['transaction_groups'] != null) {
+    if (json['transactions'] != null) {
       transactions = [];
-      json['transaction_groups'].forEach((v) {
+      json['transactions'].forEach((v) {
         transactions!.add(new TransactionGroupResponse.fromJson(v));
       });
     }
@@ -17,12 +17,8 @@ class TransactionListResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.transactions != null) {
-      data['transaction_groups'] = this.transactions!.map((v) => v.toJson()).toList();
+      data['transactions'] = this.transactions!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
-
-
-
-

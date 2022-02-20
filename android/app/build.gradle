@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     // Manually referencing the NDK ( and installing NDK + CMake SDK Tools ) is the only way I found to include native build symbols
     ndkVersion "23.0.7599858"
 

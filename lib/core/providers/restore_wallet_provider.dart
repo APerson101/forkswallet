@@ -10,7 +10,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../constants/hive_constants.dart';
 
 class RestoreWalletProvider extends ChangeNotifier {
-  Box box = Hive.box(HiveConstants.walletBox);
+  // Box box = Hive.box(HiveConstants.walletBox);
   CrossFadeState currentState = CrossFadeState.showFirst;
   Status recoverWalletStatus = Status.SUCCESS;
   QRViewController? controller;
@@ -425,15 +425,15 @@ class RestoreWalletProvider extends ChangeNotifier {
     });
   }
 
-  recoverWallet() async {
+  recoverWallet({string: String}) async {
     recoverWalletStatus = Status.LOADING;
     notifyListeners();
     try {
       recoveredWallet = await walletService.recoverWallet(
-        '${allPassword.toLowerCase()}',
+        '${string.toLowerCase()}',
       );
       print('${recoveredWallet.toString()}');
-      box.add(recoveredWallet);
+      // box.add(recoveredWallet);
     } on Exception catch (e) {
       print('Recover Wallet Error: ${e.toString()}');
       recoverWalletStatus = Status.ERROR;

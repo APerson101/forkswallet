@@ -2,6 +2,7 @@ import 'package:arbor/api/services/wallet_service.dart';
 import 'package:arbor/core/constants/ui_constants.dart';
 import 'package:arbor/core/enums/status.dart';
 import 'package:arbor/core/utils/regex.dart';
+import 'package:arbor/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -14,6 +15,7 @@ class SendCryptoProvider extends ChangeNotifier {
 
   final walletService = WalletService();
 
+  Blockchain? blockchain;
   String _appBarTitle = '';
   String get appBarTitle => _appBarTitle;
 
@@ -27,12 +29,12 @@ class SendCryptoProvider extends ChangeNotifier {
   String get addressErrorMessage => _addressErrorMessage;
 
   var transactionResponse;
-  int forkPrecision=0;
-  int networkFee=0;
-  String forkName='';
-  String forkTicker='';
-  String privateKey='';
-  String currentUserAddress='';
+  int forkPrecision = 0;
+  int networkFee = 0;
+  String forkName = '';
+  String forkTicker = '';
+  String privateKey = '';
+  String currentUserAddress = '';
   int _walletBalance = 0;
   int get walletBalance => _walletBalance;
 
@@ -52,6 +54,7 @@ class SendCryptoProvider extends ChangeNotifier {
 
   bool scannedData = false;
   bool _validAddress = false;
+  String aggSigExtraData = '';
 
   bool validAddress(String address) {
     // format and length are from
@@ -101,8 +104,7 @@ class SendCryptoProvider extends ChangeNotifier {
     }
 
     if (_transactionValue.contains('.') &&
-        _transactionValue.split('.').last.length ==
-            forkPrecision) {
+        _transactionValue.split('.').last.length == forkPrecision) {
       return;
     }
 
@@ -151,19 +153,21 @@ class SendCryptoProvider extends ChangeNotifier {
     await send();
   }
 
-  send() async {
-
+  Future send() async {
     debugPrint("Fee:$networkFee");
     sendCryptoStatus = Status.LOADING;
     notifyListeners();
     try {
       _transactionValueForDisplay = _transactionValue;
       transactionResponse = await walletService.sendXCH(
-        privateKey: privateKey,
-        amount: double.parse(_transactionValue) * chiaPrecision,
-        address: _receiverAddress,
-        fee: networkFee
-      );
+          privateKey: privateKey,
+          amount: (double.parse(_transactionValue) * chiaPrecision).toInt(),
+          address: _receiverAddress,
+          // fee: blockchain!.network_fee,
+          fee: 0,
+          // ticker: blockchain!.ticker,
+          ticker: 'xch',
+          blockChainExtraData: aggSigExtraData);
 
       if (transactionResponse == 'success') {
         sendCryptoStatus = Status.SUCCESS;
@@ -171,7 +175,7 @@ class SendCryptoProvider extends ChangeNotifier {
         _transactionValue = '0';
         _receiverAddress = '';
         _appBarTitle = 'All Done';
-      } else{
+      } else {
         _errorMessage = transactionResponse;
         sendCryptoStatus = Status.ERROR;
       }
@@ -209,7 +213,7 @@ class SendCryptoProvider extends ChangeNotifier {
   }
 
   clearStatus() {
-    _validAddress=false;
+    _validAddress = false;
     sendCryptoStatus = Status.IDLE;
   }
 

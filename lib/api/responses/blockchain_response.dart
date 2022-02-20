@@ -19,29 +19,28 @@ class BlockchainResponse {
 }
 
 class BlockchainData {
-  String? name;
-  String? unit;
-  String? logo;
-  String? ticker;
-  int? precision;
-  int? blockchainFee;
+  String name;
+  String unit;
+  String logo;
+  String ticker;
+  int precision;
+  int blockchainFee;
 
   BlockchainData(
-      {this.name,
-        this.unit,
-        this.logo,
-        this.ticker,
-        this.precision,
-        this.blockchainFee});
+      {required this.name,
+      required this.unit,
+      required this.logo,
+      required this.ticker,
+      required this.precision,
+      required this.blockchainFee});
 
-  BlockchainData.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    unit = json['unit'];
-    logo = json['logo'];
-    ticker = json['ticker'];
-    precision = json['precision'];
-    blockchainFee = json['blockchain_fee'];
-  }
+  BlockchainData.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        unit = json['unit'],
+        logo = json['logo'],
+        ticker = json['ticker'],
+        precision = json['precision'],
+        blockchainFee = json['blockchain_fee'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

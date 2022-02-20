@@ -7,8 +7,8 @@ import 'package:arbor/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-class CreateWalletProvider extends ChangeNotifier {
-  Box box = Hive.box(HiveConstants.walletBox);
+class CreateWalletProvider {
+  // Box box = Hive.box(HiveConstants.walletBox);
   Status createWalletStatus = Status.IDLE;
   final walletService = WalletService();
   Wallet? newWallet;
@@ -41,26 +41,32 @@ class CreateWalletProvider extends ChangeNotifier {
     } else {
       _revealButtonTitle = 'Reveal the Phrase';
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   bool _tappedRevealButton = false;
   bool get tappedRevealButton => _tappedRevealButton;
 
-  createNewWallet(supported_forks fork) async {
-    createWalletStatus = Status.LOADING;
-    _appBarTitle = 'Generating';
-    notifyListeners();
+  createNewWallet() async {
+    // createWalletStatus = Status.LOADING;
+    // _appBarTitle = 'Generating';
+    // notifyListeners();
+    var wtch = Stopwatch();
+    wtch.start();
+    await compute(walletService.createNewWallet, supported_forks.xch);
+    print({'iiss', wtch.elapsed});
+
     try {
-      newWallet = await walletService.createNewWallet(fork);
-      seedPhrase = newWallet!.phrase;
-      _wordsList = seedPhrase.split(' ').toList();
+      // newWallet =
+      // compute(walletService.createNewWallet, supported_forks.xch);
+      // seedPhrase = newWallet!.phrase;
+      // _wordsList = seedPhrase.split(' ').toList();
 
-      for (int i = 0; i < _wordsList.length; i++) {
-        _phrasesList.add(Phrase(index: i, phrase: _wordsList[i]));
-      }
+      // for (int i = 0; i < _wordsList.length; i++) {
+      //   _phrasesList.add(Phrase(index: i, phrase: _wordsList[i]));
+      // }
 
-      box.add(newWallet);
+      // box.add(newWallet);
     } on Exception catch (e) {
       debugPrint('Create Wallet Error: ${e.toString()} ${e.runtimeType}');
 
@@ -68,12 +74,12 @@ class CreateWalletProvider extends ChangeNotifier {
 
       _appBarTitle = 'Error';
       createWalletStatus = Status.ERROR;
-      notifyListeners();
-      return;
+      // notifyListeners();
     }
-    _appBarTitle = 'Secret Phrase';
-    createWalletStatus = Status.SUCCESS;
-    notifyListeners();
+    // _appBarTitle = 'Secret Phrase';
+    // createWalletStatus = Status.SUCCESS;
+    // notifyListeners();
+    // return _phrasesList;
   }
 
   clearAll() {
@@ -84,6 +90,6 @@ class CreateWalletProvider extends ChangeNotifier {
     createWalletStatus = Status.IDLE;
     _revealPhrase = false;
     _tappedRevealButton = false;
-    notifyListeners();
+    // notifyListeners();
   }
 }

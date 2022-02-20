@@ -5,30 +5,34 @@ import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/core/providers/restore_wallet_provider.dart';
 import 'package:arbor/core/providers/settings_provider.dart';
 import 'package:arbor/models/models.dart';
+import 'package:arbor/test.dart';
 import 'package:arbor/themes/theme_controller.dart';
 import 'package:arbor/views/screens/base/base_screen.dart';
 import 'package:arbor/views/screens/forks_selector/fork_selector.dart';
 import 'package:arbor/views/screens/no_encryption_available_sccreen.dart';
 import 'package:arbor/core/providers/send_crypto_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants/hive_constants.dart';
 import 'core/providers/create_wallet_provider.dart';
 import 'models/blockchain.dart';
 import 'models/transaction.dart';
 import 'models/wallet.dart';
+import 'testwo.dart';
 import 'themes/arbor_theme_data.dart';
 import 'views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'views/screens/on_boarding/splash_screen.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  runApp(ProviderScope(child: MyApp()));
+  return;
   await Hive.initFlutter();
 
   try {
@@ -100,6 +104,11 @@ main() async {
   }
 }
 
+final createWalletProvider = Provider((ref) => CreateWalletProvider());
+final restoreWalletProvider = Provider((ref) => RestoreWalletProvider());
+final sendCryptoProvider = Provider((ref) => SendCryptoProvider());
+final settingsProvider = Provider((ref) => SettingsProvider());
+
 void _hiveAdaptersRegistration() {
   Hive.registerAdapter(WalletAdapter());
   Hive.registerAdapter(BlockchainAdapter());
@@ -125,7 +134,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
   }
 
@@ -147,56 +155,40 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => CreateWalletProvider()),
-        ChangeNotifierProvider(create: (_) => RestoreWalletProvider()),
-        ChangeNotifierProvider(create: (_) => SendCryptoProvider()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
-      ],
-      child: ScreenUtilInit(builder: () {
-        return FutureBuilder<bool>(
-            future: loadTheme(),
-            builder: (context, theme) {
-              var currTheme;
-              if (theme.hasData) {
-                currTheme = theme.data as bool;
-                return GetMaterialApp(
-                    title: 'Arbor',
-                    initialBinding:
-                        // BindingsBuilder(() => Get.lazyPut(() => ThemeController())),
-                        BindingsBuilder(() {
-                      Get.lazyPut(() => ForksDashboardController());
-                      Get.lazyPut(() => ThemeController());
-                    }),
-                    theme: currTheme
-                        ? ThemeData.dark()
-                        : ThemeData(
-                            brightness: Brightness.light,
-                            primarySwatch: Colors.purple),
-                    debugShowCheckedModeBanner: false,
-                    home: FutureBuilder<bool>(
-                        future: _isFirstTimeUser(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            bool _isFirstTime = snapshot.data as bool;
-                            if (_isFirstTime) {
-                              return SplashScreen();
-                            } else {
-                              return BaseScreen();
-                            }
-                          } else {
-                            return Container(
-                                // color: ArborColors.green,
-                                );
-                          }
-                        }));
-              }
-              return Container();
+    return ScreenUtilInit(builder: () {
+      return FutureBuilder<bool>(
+          future: loadTheme(),
+          builder: (context, theme) {
+            return GetMaterialApp(
+                initialBinding:
+                    // BindingsBuilder(() => Get.lazyPut(() => ThemeController())),
+                    BindingsBuilder(() {
+                  Get.lazyPut(() => ForksDashboardController());
+                  Get.lazyPut(() => ThemeController());
+                }),
+                theme: ThemeData.dark(),
+                debugShowCheckedModeBanner: false,
+                home: FutureBuilder<bool>(
+                    future: _isFirstTimeUser(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        bool _isFirstTime = snapshot.data as bool;
+                        if (_isFirstTime) {
+                          return TestTwo();
 
-              ;
-            });
-      }),
-    );
+                          return SplashScreen();
+                        } else {
+                          return TestTwo();
+
+                          return BaseScreen();
+                        }
+                      } else {
+                        return Container(
+                            // color: ArborColors.green,
+                            );
+                      }
+                    }));
+          });
+    });
   }
 }
