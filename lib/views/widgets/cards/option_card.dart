@@ -1,6 +1,7 @@
 import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class OptionCard extends StatelessWidget {
   final String? iconPath;
@@ -16,10 +17,14 @@ class OptionCard extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         elevation: 2,
-        color: ArborColors.logoGreen,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20),),),
+        // color: ArborColors.logoGreen,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
         child: Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(30),
@@ -31,6 +36,7 @@ class OptionCard extends StatelessWidget {
                 '$iconPath',
                 height: 60,
                 width: 60,
+                color: Get.isDarkMode ? Colors.white : Colors.black,
               ),
               SizedBox(
                 height: 20,
@@ -40,7 +46,7 @@ class OptionCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: ArborColors.white,
+                  // color: ArborColors.white,
                 ),
               ),
               Text(
@@ -49,10 +55,9 @@ class OptionCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: ArborColors.green,
+                  // color: ArborColors.green,
                 ),
               ),
-
             ],
           ),
         ),

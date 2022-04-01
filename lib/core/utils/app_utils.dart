@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AppUtils{
 
@@ -7,7 +8,7 @@ class AppUtils{
       SnackBar(
         content: Text("$message"),
         duration: Duration(milliseconds: 1000),
-        backgroundColor: color,
+        backgroundColor: Get.theme.backgroundColor,
         elevation: 2,
         padding: EdgeInsets.all(
           10,

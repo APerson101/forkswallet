@@ -2,6 +2,7 @@ import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/core/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class ArborTextField extends StatelessWidget {
   final String hintText;
@@ -15,13 +16,13 @@ class ArborTextField extends StatelessWidget {
 
   ArborTextField(
       {this.hintText = '',
-        this.controller,
-        this.focusNode,
-        this.isDisabled = false,
-        this.errorMessage = '',
-        this.onChanged,
-        this.onTextFieldTapped,
-        this.onIconPressed});
+      this.controller,
+      this.focusNode,
+      this.isDisabled = false,
+      this.errorMessage = '',
+      this.onChanged,
+      this.onTextFieldTapped,
+      this.onIconPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -61,19 +62,26 @@ class ArborTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: ArborColors.logoGreen,)
-                    ),
+                        borderSide: BorderSide(
+                          color: Get.isDarkMode
+                              ? Colors.white.withOpacity(0.3)
+                              : Colors.black.withOpacity(0.3),
+                        )),
                     disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: ArborColors.logoGreen,)
-                    ),
-
+                        borderSide: BorderSide(
+                          color: Get.isDarkMode
+                              ? Colors.white.withOpacity(0.3)
+                              : Colors.black.withOpacity(0.3),
+                        )),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: ArborColors.logoGreen,)
-                    ),
-                    contentPadding:
-                    EdgeInsets.fromLTRB(20,20,0,20),
+                        borderSide: BorderSide(
+                          color: Get.isDarkMode
+                              ? Colors.white.withOpacity(0.3)
+                              : Colors.black.withOpacity(0.3),
+                        )),
+                    contentPadding: EdgeInsets.fromLTRB(20, 20, 0, 20),
                     suffixIcon: IconButton(
                       onPressed: () => onIconPressed!(),
                       icon: Padding(
@@ -94,7 +102,13 @@ class ArborTextField extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text('$errorMessage',style: TextStyle(color: ArborColors.errorRed,fontSize: 12,),),
+            child: Text(
+              '$errorMessage',
+              style: TextStyle(
+                color: ArborColors.errorRed,
+                fontSize: 12,
+              ),
+            ),
           ),
         ],
       ),

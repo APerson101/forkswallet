@@ -1,3 +1,4 @@
+import 'package:arbor/core/constants/arbor_constants.dart';
 import 'package:arbor/models/models.dart';
 import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/views/screens/send/value_screen.dart';
@@ -10,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:flutter/services.dart';
 import 'package:arbor/views/screens/home/wallet_receive_screen.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 import '../../../core/constants/hive_constants.dart';
 
@@ -68,22 +70,20 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
               children: [
                 ListTile(
                   leading: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                        image: AssetImage("assets/images/chia-logo.png"),
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                  ),
+                      width: 50,
+                      height: 50,
+                      child: Image.network(
+                        ArborConstants.baseWebsiteURL +
+                            walletData.blockchain.logo,
+                        fit: BoxFit.contain,
+                        height: 50,
+                        width: 50,
+                      ).decorated(
+                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(20))),
                   // title: Text('${walletData.fork.name} (${walletData.name})'),
                   title: Text(
                     '${walletData.blockchain.name}',
-                    style: TextStyle(
-                      color: ArborColors.white,
-                    ),
                   ),
                   subtitle: Text(
                     walletData.blockchain.ticker.toUpperCase(),
@@ -93,66 +93,44 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
                   ),
                 ),
                 Card(
-                  color: Colors.green,
                   child: ListTile(
                     title: FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
                         '${walletData.blockchain.ticker.toUpperCase()}: ${walletData.balanceForDisplay()}',
-                        style: TextStyle(
-                          color: ArborColors.white,
-                        ),
                       ),
                     ),
                     trailing: Icon(Icons.copy),
                     onTap: () {
-                      Clipboard.setData(ClipboardData(
-                          text: walletData.balanceForDisplay()));
+                      Clipboard.setData(
+                          ClipboardData(text: walletData.balanceForDisplay()));
                       showSnackBar(context, 'Balance copied');
-
-
                     },
                   ),
                 ),
                 Card(
-                  color: Colors.green,
                   child: ListTile(
                     title: Text(
                       'Address',
-                      style: TextStyle(
-                        color: ArborColors.white,
-                      ),
                     ),
                     subtitle: Text(
                       walletData.address,
-                      style: TextStyle(
-                        color: ArborColors.white70,
-                      ),
                     ),
                     trailing: Icon(Icons.copy),
                     onTap: () {
                       Clipboard.setData(
                           ClipboardData(text: walletData.address));
                       showSnackBar(context, 'Wallet address copied');
-
-
                     },
                   ),
                 ),
                 Card(
-                  color: Colors.green,
                   child: ListTile(
                     title: Text(
                       'Public Key',
-                      style: TextStyle(
-                        color: ArborColors.white,
-                      ),
                     ),
                     subtitle: Text(
                       walletData.publicKey,
-                      style: TextStyle(
-                        color: ArborColors.white70,
-                      ),
                     ),
                     trailing: Icon(Icons.copy),
                     onTap: () {
@@ -163,20 +141,12 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
                   ),
                 ),
                 Card(
-                  color: Colors.green,
                   child: ListTile(
                     title: Text(
                       'Private Key',
-                      style: TextStyle(
-                        color: ArborColors.white,
-                      ),
                     ),
-                    subtitle:
-                    Text(
+                    subtitle: Text(
                       '*' * walletData.privateKey.toString().length,
-                      style: TextStyle(
-                        color: ArborColors.white70,
-                      ),
                     ),
                     trailing: Icon(Icons.copy),
                     onTap: () {
@@ -191,7 +161,9 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
           }
         },
       ),
-      SizedBox(height: 40,),
+      SizedBox(
+        height: 40,
+      ),
       ArborButton(
         // style: ElevatedButton.styleFrom(
         //   minimumSize: Size(double.infinity,
@@ -203,14 +175,13 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
             isScrollControlled: true,
             builder: (BuildContext context) {
               return TransactionsSheet(
-                  walletAddress: (walletBox.getAt(index) as Wallet).address,
+                walletAddress: (walletBox.getAt(index) as Wallet).address,
                 precision: widget.wallet.blockchain.precision,
               );
             },
           );
         },
         title: 'All Transactions',
-        backgroundColor: ArborColors.deepGreen,
       ),
       ListTile(
         contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -218,7 +189,6 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
           children: <Widget>[
             Expanded(
                 child: ArborButton(
-                    backgroundColor: ArborColors.deepGreen,
                     onPressed: () {
                       _showReceiveView();
                     },
@@ -226,12 +196,13 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
             SizedBox(width: 10),
             Expanded(
                 child: ArborButton(
-                    backgroundColor: ArborColors.deepGreen,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ValueScreen(wallet: widget.wallet,),
+                          builder: (context) => ValueScreen(
+                            wallet: widget.wallet,
+                          ),
                         ),
                       );
                     },
@@ -242,18 +213,20 @@ class _ExpandedHomePageState extends State<ExpandedHomePage> {
     ]);
   }
 
-  showSnackBar(BuildContext context,String message){
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$message!"),
-      duration: Duration(milliseconds: 1000),
-      backgroundColor: ArborColors.deepGreen,
-      elevation: 2,
-      padding: EdgeInsets.all(
-        10,
-      ), // Inner padding for SnackBar content.
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),),);
+  showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("$message!"),
+        duration: Duration(milliseconds: 1000),
+        elevation: 2,
+        padding: EdgeInsets.all(
+          10,
+        ), // Inner padding for SnackBar content.
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+      ),
+    );
   }
 }
-

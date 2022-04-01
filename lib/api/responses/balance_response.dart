@@ -4,12 +4,12 @@ class BalanceResponse {
   BalanceResponse({this.balance});
 
   BalanceResponse.fromJson(Map<String, dynamic> json) {
-    balance = json['balance'];
+    balance = json['amount'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['balance'] = this.balance;
+    data['amount'] = this.balance;
     return data;
   }
 }
