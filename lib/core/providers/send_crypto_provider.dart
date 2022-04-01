@@ -5,6 +5,7 @@ import 'package:arbor/core/utils/regex.dart';
 import 'package:arbor/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class SendCryptoProvider extends ChangeNotifier {
@@ -158,17 +159,19 @@ class SendCryptoProvider extends ChangeNotifier {
     sendCryptoStatus = Status.LOADING;
     notifyListeners();
     try {
+      var xxx = (double.parse(_transactionValue) * chiaPrecision).toInt();
+
       _transactionValueForDisplay = _transactionValue;
       transactionResponse = await walletService.sendXCH(
           privateKey: privateKey,
-          amount: (double.parse(_transactionValue) * chiaPrecision).toInt(),
+          amount: xxx,
           address: _receiverAddress,
           // fee: blockchain!.network_fee,
           fee: 0,
           // ticker: blockchain!.ticker,
           ticker: 'xch',
           blockChainExtraData: aggSigExtraData);
-
+      var xx = _receiverAddress;
       if (transactionResponse == 'success') {
         sendCryptoStatus = Status.SUCCESS;
         _walletBalanceStatus = Status.IDLE;
@@ -180,6 +183,7 @@ class SendCryptoProvider extends ChangeNotifier {
         sendCryptoStatus = Status.ERROR;
       }
       notifyListeners();
+      return {'receiver': xx, 'amount': xxx};
     } on Exception catch (e) {
       _errorMessage = e.toString();
       sendCryptoStatus = Status.ERROR;
@@ -187,20 +191,39 @@ class SendCryptoProvider extends ChangeNotifier {
     }
   }
 
-  getBalance() async {
+  getBalance(Wallet activeWallet) async {
     _walletBalanceStatus = Status.LOADING;
     notifyListeners();
     try {
-      _walletBalance =
-          await walletService.fetchWalletBalance(currentUserAddress);
+      _walletBalance = await walletService.fetchWalletBalance(activeWallet);
       _walletBalanceStatus = Status.SUCCESS;
       notifyListeners();
     } on Exception catch (e) {
       _walletBalance = 0;
       _walletBalanceStatus = Status.ERROR;
       notifyListeners();
-      throw Exception('${e.toString()}');
+      throw Exception(e.toString());
     }
+  }
+
+  Future<Box> refreshWalletBalances(Box walletBox) async {
+    for (int index = 0; index < walletBox.length; index++) {
+      Wallet existingWallet = walletBox.getAt(index);
+      int newBalance = await walletService.fetchWalletBalance(existingWallet);
+
+      Wallet newWallet = Wallet(
+        name: existingWallet.name,
+        privateKey: existingWallet.privateKey,
+        publicKey: existingWallet.publicKey,
+        address: existingWallet.address,
+        balance: newBalance,
+        blockchain: existingWallet.blockchain,
+      );
+
+      walletBox.putAt(index, newWallet);
+    }
+    debugPrint("From view model - done");
+    return walletBox;
   }
 
   clearInput() {

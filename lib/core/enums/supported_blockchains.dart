@@ -1,1 +1,1 @@
-enum supported_forks { xch, xdg, xfl }
+enum supported_forks { xch, hdd, xcd }

@@ -1,95 +1,178 @@
+import 'dart:convert';
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
 import 'package:arbor/addressdetails.dart';
+import 'package:arbor/core/constants/arbor_constants.dart';
 import 'package:arbor/importwallet.dart';
 import 'package:arbor/sendview.dart';
+import 'package:arbor/views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'package:arbor/walletselector.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:styled_widget/styled_widget.dart';
 
 import 'createwalletview.dart';
+import 'models/wallet.dart';
 
-class TestTwo extends StatelessWidget {
-  const TestTwo({Key? key}) : super(key: key);
+class WalletandCllcks {
+  Wallet wallet;
+  Refers refe;
+  WalletandCllcks({
+    required this.wallet,
+    required this.refe,
+  });
+}
+
+enum LoadingStatus { loading, success, failure }
+final boxLoader =
+    StateNotifierProvider<ForksDashboardController, Wallet?>((ref) {
+  return ForksDashboardController(null);
+});
+typedef Refers = void Function(bool);
+final loadingBalanceStatus =
+    FutureProvider.family<void, WalletandCllcks>((ref, wallet_clcks) async {
+  var tt = await ref.watch(boxLoader.notifier).reloadWalletBalances(
+        wallet: wallet_clcks.wallet,
+        setRefresh: wallet_clcks.refe,
+      );
+  return tt;
+});
+
+final usdchia = FutureProvider((ref) async {
+  var rr = ref.watch(boxLoader.notifier).getCHIAUSD();
+  return rr;
+});
+
+class TestTwo extends ConsumerWidget {
+  final String previousPage;
+  late final Box walletBox;
+
+  TestTwo({Key? key, required this.previousPage}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.all(12),
-          children: [
-            DrawerHeader(
-                child: FlutterLogo(
-              size: 24,
-            )),
-            ListTile(
-                onTap: () {},
-                leading: Icon(Icons.settings),
-                title: Text("Settings")),
-            ListTile(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CreateWalletView())),
-                leading: Icon(Icons.new_label),
-                title: Text("Create Wallet")),
-            ListTile(
-                onTap: () => Get.to(() => ImportWalletView()),
-                leading: Icon(Icons.new_label),
-                title: Text("Import Wallet")),
-          ],
-        )),
-        body: MainBody());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeWallet = ref.watch(boxLoader);
+    if (activeWallet == null) {
+      return const Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+    }
+
+    return ref.watch(usdchia).when(
+        error: (error, tr) => const Center(child: Text("error")),
+        loading: () => const Scaffold(
+            body: Center(child: CircularProgressIndicator.adaptive())),
+        data: (usd_chia) {
+          print(usd_chia);
+
+          return Scaffold(
+              drawer: Drawer(
+                  child: ListView(
+                padding: const EdgeInsets.all(12),
+                children: [
+                  const DrawerHeader(
+                      child: FlutterLogo(
+                    size: 24,
+                  )),
+                  // ListTile(
+                  //     onTap: () {},
+                  //     leading: const Icon(Icons.settings),
+                  //     title: const Text("Settings")),
+                  ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateWalletView(
+                                    previousPage: previousPage)));
+                      },
+                      leading: const Icon(Icons.new_label),
+                      title: const Text("Create Wallet")),
+                  ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ImportWalletView(
+                                  previousPage: previousPage,
+                                )));
+                      },
+                      leading: const Icon(Icons.new_label),
+                      title: const Text("Import Wallet")),
+                ],
+              )),
+              body: MainBody(activeWallet: activeWallet, chiausd: usd_chia));
+        });
   }
 }
 
-class MainBody extends StatelessWidget {
-  const MainBody({Key? key}) : super(key: key);
+class MainBody extends ConsumerWidget {
+  MainBody({Key? key, required this.activeWallet, required this.chiausd})
+      : super(key: key);
+  final Wallet? activeWallet;
+  final double chiausd;
+  final RxBool isRefreshing = false.obs;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF737874),
-              Color(0xFF393939),
-            ]),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Stack(
-            children: [
-              Positioned.directional(
-                  textDirection: TextDirection.ltr,
-                  top: 5,
-                  start: 0,
-                  end: 0,
-                  height: 25,
-                  child: topBar(context)),
-              Positioned(
-                top: 60,
-                left: 0,
-                right: 0,
-                child: Column(children: getChildren(context)),
-              ),
-            ],
-          ),
-        ),
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Stack(
+      children: [
+        Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF737874),
+                    Color(0xFF393939),
+                  ]),
+            ),
+            child: SafeArea(
+                child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Stack(children: [
+                      Positioned.directional(
+                          textDirection: TextDirection.ltr,
+                          top: 5,
+                          start: 0,
+                          end: 0,
+                          height: 25,
+                          child: topBar(context, activeWallet!, ref, chiausd)),
+                      Positioned(
+                          top: 60,
+                          left: 0,
+                          right: 0,
+                          child: Column(
+                              children: getChildren(context, activeWallet!,
+                                  chiausd: chiausd)))
+                    ])))),
+        Obx(() {
+          if (isRefreshing.value) {
+            print(isRefreshing.value);
+
+            return BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child:
+                      const Center(child: CircularProgressIndicator.adaptive()),
+                ));
+          } else {
+            debugPrint("not lading anymore");
+            return Container();
+          }
+        }),
+      ],
     );
   }
 
-  getChildren(BuildContext context) {
+  getChildren(BuildContext context, Wallet wallet, {required double chiausd}) {
     List<Widget> children = [];
-    children.add(getBalance(context));
+    children.add(getBalance(context, wallet, chiausd));
     children.add(SizedBox(height: 40));
     children.add(DefaultTabController(
         length: 2,
@@ -97,7 +180,7 @@ class MainBody extends StatelessWidget {
           height: MediaQuery.of(context).size.height * 0.45,
           child: Column(
             children: [
-              TabBar(tabs: [
+              const TabBar(tabs: [
                 Tab(
                   text: 'Assets',
                 ),
@@ -109,13 +192,15 @@ class MainBody extends StatelessWidget {
                 child: TabBarView(children: [
                   Container(
                     child: SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
-                        child: getCoinDetails()),
+                        padding: const EdgeInsets.only(top: 20),
+                        child: getCoinDetails(wallet, chiausd)),
                   ),
                   Container(
-                    child: SingleChildScrollView(
+                    child: const SingleChildScrollView(
                         padding: EdgeInsets.only(top: 20),
-                        child: ListView(children: getTxns(context: context))),
+                        child: Card(child: Text("Coming soon"))
+                        //  Column(children: getTxns(context: context))
+                        ),
                   ),
                 ]),
               )
@@ -126,66 +211,62 @@ class MainBody extends StatelessWidget {
     return children;
   }
 
-  getBalance(BuildContext context) {
+  getBalance(BuildContext context, Wallet activeWallet, double usd_rate) {
+    debugPrint("showig this page again");
     return Container(
       child: Column(
         children: [
-          Text("\$19,018.474",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4!
-                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+          RichText(
+              text: TextSpan(
+                  text: ((activeWallet.balance) / (ArborConstants.MOJO_TO_CHIA))
+                      .toString(),
+                  // Text("\$19,018.474",
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                  children: [
+                TextSpan(
+                    text: activeWallet.blockchain.ticker,
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.bold))
+              ])),
           const SizedBox(height: 40),
           ButtonBar(
             buttonMinWidth: double.infinity,
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                  onPressed: () => Get.to(() => SendView()),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SendView(
+                            currentWallet: activeWallet,
+                            usd_rate: usd_rate,
+                          ))),
                   child: Text("Send"),
                   style: ElevatedButton.styleFrom(
                       shape: StadiumBorder(), minimumSize: Size(150, 60))),
               ElevatedButton(
                   onPressed: () async => await Get.defaultDialog(
                       title: "Your wallet address",
-                      content: SizedBox(
-                        width: MediaQuery.of(context).size.width - 10,
-                        height: MediaQuery.of(context).size.height - 150,
+                      content: Container(
                         child: Column(children: [
-                          Row(children: [
-                            Spacer(),
-                            Text('xch0xfds...45jkds',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(color: Colors.grey)),
-                            IconButton(
-                                onPressed: () async {
-                                  await Clipboard.setData(
-                                      ClipboardData(text: 'stuffs'));
-                                  Get.snackbar(
-                                      'status', "address copied to clipbord",
-                                      duration: Duration(seconds: 1));
-                                },
-                                icon: Icon(
-                                  Icons.copy,
-                                  color: Colors.grey,
-                                )),
-                            Spacer()
-                          ]),
-                          SizedBox(
+                          Text(activeWallet.address,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(color: Colors.grey)),
+                          const SizedBox(
                             height: 15,
                           ),
                           QrImage(
-                            data: "stuffs",
+                            data: activeWallet.address,
                             size: 250,
                             version: QrVersions.auto,
                           )
                         ]),
                       )),
-                  child: Text("Receive"),
+                  child: const Text("Receive"),
                   style: ElevatedButton.styleFrom(
-                      shape: StadiumBorder(), minimumSize: Size(150, 60))),
+                      shape: const StadiumBorder(),
+                      minimumSize: const Size(150, 60))),
             ],
           )
         ],
@@ -193,7 +274,13 @@ class MainBody extends StatelessWidget {
     );
   }
 
-  Widget topBar(BuildContext context) {
+  Widget topBar(BuildContext context, Wallet activeWallet, WidgetRef ref,
+      double chia_usd) {
+    StringBuffer shortenedAddress = StringBuffer();
+    shortenedAddress.write(activeWallet.address.substring(0, 6));
+    shortenedAddress.write('....');
+    shortenedAddress.write(activeWallet.address.substring(
+        activeWallet.address.length - 4, activeWallet.address.length));
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       IconButton(
           onPressed: () {
@@ -201,58 +288,72 @@ class MainBody extends StatelessWidget {
                 ? Scaffold.of(context).openDrawer()
                 : Navigator.pop(context);
           },
-          icon: Scaffold.of(context).isDrawerOpen
-              ? Icon(Icons.cancel)
-              : Icon(Icons.menu)),
-      MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-            onTap: () => Get.to(() => WalletSelector()),
-            child: Row(children: [
-              RichText(
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  text: TextSpan(
-                      text: "Chia 1",
-                      style: Theme.of(context).textTheme.subtitle1,
-                      children: [
-                        TextSpan(
-                            text: "(xch34f4...99f4)",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(color: Colors.grey))
-                      ])),
-              Icon(Icons.arrow_drop_down_outlined)
-            ])),
-      ),
+          icon: const Icon(Icons.menu)),
+      GestureDetector(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => WalletSelector(
+                  chiaUsd: chia_usd, activeWallet: activeWallet))),
+          child: Row(children: [
+            RichText(
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                text: TextSpan(
+                    text: activeWallet.blockchain.name,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    children: [
+                      TextSpan(
+                          text: "$shortenedAddress",
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(color: Colors.grey))
+                    ])),
+            const Icon(Icons.arrow_drop_down_outlined)
+          ])),
       IconButton(
           onPressed: () {
             //show address details
-            Get.to(() => AddressDetails());
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AddressDetails(wallet: activeWallet)));
           },
-          icon: Icon(Icons.dashboard))
+          icon: const Icon(Icons.dashboard)),
+      IconButton(
+          onPressed: () async {
+            debugPrint('Refresh button tapped');
+            isRefreshing.value = true;
+            Refers reff = (status) {
+              isRefreshing.value = false;
+              debugPrint("done refreshing");
+            };
+
+            ref.refresh(loadingBalanceStatus(
+                WalletandCllcks(wallet: activeWallet, refe: reff)));
+          },
+          icon: const Icon(Icons.refresh))
     ]);
   }
 
-  getCoinDetails() {
+  getCoinDetails(Wallet activeWallet, double chiausd) {
     return Card(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: ListTile(
         onTap: () {},
-        leading: FlutterLogo(size: 24),
-        title: Text("Solana",
-            style: TextStyle(
+        leading: const FlutterLogo(size: 24),
+        title: Text('${activeWallet.blockchain.name.capitalizeFirst}',
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
                 color: Colors.white)),
         subtitle: Text(
-          "110 SOL",
-          style: TextStyle(color: Colors.grey),
+          "\$ ${(activeWallet.balance / ArborConstants.MOJO_TO_CHIA) * chiausd}",
+          softWrap: true,
+          style: const TextStyle(color: Colors.grey),
         ),
-        trailing: Text("\$16,560.5",
-            style: TextStyle(
+        trailing: Text(
+            "${activeWallet.balance / ArborConstants.MOJO_TO_CHIA} ${activeWallet.blockchain.ticker.capitalize}",
+            softWrap: true,
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
                 color: Colors.white)),
@@ -265,25 +366,28 @@ class MainBody extends StatelessWidget {
     var dd = Card(
         child: ListTile(
       onTap: () async => await Get.defaultDialog(
-          content: SizedBox(
-        width: MediaQuery.of(context).size.width - 20,
-        height: MediaQuery.of(context).size.height - 100,
-        child: Column(children: [
-          Text("Block number"),
-          Text("Receiver full details"),
-          Text("Txn ID"),
-          Text("Some hash stuffs probably"),
-        ]),
-      )),
-      leading: Icon(Icons.send),
-      title: Text("Receiver: xch458hi43498hkjdhg4"),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width - 20,
+          height: MediaQuery.of(context).size.height - 100,
+          child: Column(
+            children: const [
+              Text("Block number"),
+              Text("Receiver full details"),
+              Text("Txn ID"),
+              Text("Some hash stuffs probably"),
+            ],
+          ),
+        ),
+      ),
+      leading: const Icon(Icons.send),
+      title: const Text("Receiver: xch458hi43498hkjdhg4"),
       subtitle: RichText(
         text: TextSpan(
             text: "status",
             style: Theme.of(context).textTheme.subtitle1,
-            children: [TextSpan(text: "pending")]),
+            children: const [TextSpan(text: "pending")]),
       ),
-      trailing: Text("\$546"),
+      trailing: const Text("\$546"),
     ));
     txns.add(dd);
     txns.add(dd);

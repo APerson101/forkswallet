@@ -1,26 +1,24 @@
 import 'dart:core';
 import 'dart:typed_data';
-
 import 'package:arbor/api/responses/coin_response.dart';
-import 'package:arbor/api/responses/record_response.dart';
-import 'package:arbor/api/responses/records_response.dart';
+// import 'package:arbor/api/responses/record_response.dart';
+// import 'package:arbor/api/responses/records_response.dart';
 import 'package:arbor/api/responses/transaction_response.dart';
 import 'package:arbor/api/responses/utxos.dart';
-import 'package:arbor/api/responses/wallet_address_response.dart';
+// import 'package:arbor/api/responses/wallet_address_response.dart';
 import 'package:arbor/bls/ec.dart';
 import 'package:arbor/bls/schemes.dart';
 import 'package:arbor/clvm/program.dart';
 import 'package:arbor/core/enums/supported_blockchains.dart';
 import 'package:arbor/core/utils/local_signer.dart';
 import 'package:arbor/models/transaction.dart';
+import 'package:arbor/models/usdvalue.dart';
 import 'package:bech32m/bech32m.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart';
-
 import '/models/models.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../responses.dart';
 import 'api_service.dart';
 
@@ -31,7 +29,7 @@ class WalletService extends ApiService {
 
   BaseResponse? baseResponse;
 
-  createNewWallet(supported_forks fork) {
+  Wallet createNewWallet(supported_forks fork) {
     String mnemonic = "";
     WalletKeysAndAddress? keyAddress;
     LocalSigner localSigner = LocalSigner();
@@ -42,101 +40,180 @@ class WalletService extends ApiService {
       // return Future.delayed(Duration(seconds: 10), () => 'done');
       var wtch = Stopwatch();
       wtch.start();
-      keyAddress = localSigner.convertMnemonicToKeysAndAddress(mnemonic);
+      keyAddress = localSigner.convertMnemonicToKeysAndAddress(
+          {'mnemonic': mnemonic, 'ticker': describeEnum(fork)});
       print({'wait time', wtch.elapsed});
-      print({'address', keyAddress!.address});
+      print({'address', keyAddress.address});
       print({
         'public key',
-        const HexEncoder().convert(keyAddress!.publicKey.toBytes())
+        const HexEncoder().convert(keyAddress.publicKey.toBytes())
       });
       print({
         'private key',
-        const HexEncoder().convert(keyAddress!.privateKey.toBytes())
+        const HexEncoder().convert(keyAddress.privateKey.toBytes())
       });
     } on Exception catch (e) {
       throw Exception('ERROR : ${e.toString()}');
     }
 
     // Blockchain? blockchain = await fetchBlockchainInfo();
-    Blockchain blockchain = Blockchain(
-        name: 'Chia',
-        unit: 'Mojo',
-        logo: '/icons/blockchains/chia.png',
-        ticker: 'xch',
-        precision: 12,
-        network_fee: 0);
+    Blockchain blockchain;
+    switch (fork) {
+      case supported_forks.xch:
+        blockchain = Blockchain(
+            name: 'Chia',
+            unit: 'Mojo',
+            logo: '/icons/blockchains/chia.png',
+            ticker: 'xch',
+            precision: 12,
+            network_fee: 0);
+        break;
+      case supported_forks.hdd:
+        blockchain = Blockchain(
+            name: 'HDD',
+            ticker: 'hdd',
+            unit: 'Mojo',
+            precision: 12,
+            logo: 'logo',
+            network_fee: 0);
+        break;
+      case supported_forks.xcd:
+        blockchain = Blockchain(
+            name: 'ChiaDoge',
+            ticker: 'xcd',
+            unit: 'Mojo',
+            precision: 12,
+            logo: 'logo',
+            network_fee: 0);
+        break;
+      default:
+        blockchain = Blockchain(
+            name: 'name',
+            ticker: 'ticker',
+            unit: 'unit',
+            precision: 12,
+            logo: 'logo',
+            network_fee: 0);
+        break;
+    }
+
 //agg_sig_me_extra_data: ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb,
 // blockchain_fee: 0
     Wallet wallet = Wallet(
       name: '',
-      privateKey: const HexEncoder().convert(keyAddress!.privateKey.toBytes()),
-      publicKey: const HexEncoder().convert(keyAddress!.publicKey.toBytes()),
-      address: keyAddress!.address,
+      phrase: mnemonic,
+      privateKey: const HexEncoder().convert(keyAddress.privateKey.toBytes()),
+      publicKey: const HexEncoder().convert(keyAddress.publicKey.toBytes()),
+      address: keyAddress.address,
       blockchain: blockchain,
       balance: 0,
     );
-    return "fd";
+    return wallet;
     // return wallet;
   }
 
-  recoverWallet(String phrase) async {
-    // WalletKeysAndAddress? keyAddress;
-    // print(phrase);
-    // var hrase =
-    //     'rain return actual brand story health twice width perfect gossip cinnamon infant';
-    // try {
-    //   LocalSigner localSigner = LocalSigner();
+  recoverWallet(String phrase, supported_forks ticker) async {
+    WalletKeysAndAddress? keyAddress;
+    print(phrase);
+    var hrase =
+        'rain return actual brand story health twice width perfect gossip cinnamon infant';
+    try {
+      LocalSigner localSigner = LocalSigner();
 
-    //   keyAddress = localSigner.convertMnemonicToKeysAndAddress(phrase);
-    // } on Exception catch (e) {
-    //   throw Exception('ERROR : ${e.toString()}');
-    // }
-    // // print(keyAddress.address);
-    // String address = keyAddress.address;
-    // try {
-    //   final balanceResponse = await http.get(
-    //     Uri.parse(
-    //         'http://162.213.248.37:8000/v1/blockchain/xch/address/$address/balance'),
-    //   );
-    //   if (balanceResponse.statusCode == 200) {
-    //     BalanceResponse balance = BalanceResponse.fromJson(
-    //         jsonDecode(balanceResponse.body)["result"]);
-    //     Blockchain? blockchain = await fetchBlockchainInfo();
-    //     Wallet wallet = Wallet(
-    //       name: '',
-    //       privateKey:
-    //           const HexEncoder().convert(keyAddress.privateKey.toBytes()),
-    //       publicKey: const HexEncoder().convert(keyAddress.publicKey.toBytes()),
-    //       address: keyAddress.address,
-    //       blockchain: blockchain,
-    //       balance: balance.balance!,
-    //     );
-    //     print({
-    //       'private key',
-    //       const HexEncoder().convert(keyAddress.privateKey.toBytes())
-    //     });
-    //     print({
-    //       'public key',
-    //       const HexEncoder().convert(keyAddress.publicKey.toBytes())
-    //     });
-    //     return wallet;
-    //   } else {
-    //     throw Exception('${balanceResponse.body}');
-    //   }
-    // } on Exception catch (e) {
-    //   throw Exception('ERROR : ${e.toString()}');
-    // }
-    return null;
+      keyAddress = await compute(localSigner.convertMnemonicToKeysAndAddress,
+          {'mnemonic': phrase, 'ticker': describeEnum(ticker)});
+    } on Exception catch (e) {
+      throw Exception('ERROR : ${e.toString()}');
+    }
+    print(keyAddress!.address);
+    String address = keyAddress!.address;
+    try {
+      final balanceResponse = await http.get(
+        Uri.parse(
+            'http://162.213.248.37:8081/v1/blockchain/${describeEnum(ticker)}/address/$address/balance'),
+      );
+      if (balanceResponse.statusCode == 200) {
+        print("balance recovery success");
+        BalanceResponse balance = BalanceResponse.fromJson(
+            jsonDecode(balanceResponse.body)["result"]);
+        // Blockchain? blockchain = await fetchBlockchainInfo();
+        Blockchain blockchain;
+        var ss = describeEnum(supported_forks.xch);
+        switch (ticker) {
+          case supported_forks.xch:
+            blockchain = Blockchain(
+                name: 'Chia',
+                unit: 'Mojo',
+                logo: '/icons/blockchains/chia.png',
+                ticker: 'xch',
+                precision: 12,
+                network_fee: 0);
+            break;
+          case supported_forks.hdd:
+            blockchain = Blockchain(
+                name: 'HDD',
+                unit: ' ',
+                logo: '/icons/blockchains/chia.png',
+                ticker: 'hdd',
+                precision: 12,
+                network_fee: 0);
+            break;
+
+          case supported_forks.xcd:
+            blockchain = Blockchain(
+                name: 'DogeChia',
+                unit: ' ',
+                logo: '/icons/blockchains/chia.png',
+                ticker: 'xcd',
+                precision: 12,
+                network_fee: 0);
+            break;
+          default:
+            blockchain = Blockchain(
+                name: 'Chia',
+                unit: 'Mojo',
+                logo: '/icons/blockchains/chia.png',
+                ticker: 'xch',
+                precision: 12,
+                network_fee: 0);
+        }
+
+        Wallet wallet = Wallet(
+          name: '',
+          privateKey:
+              const HexEncoder().convert(keyAddress.privateKey.toBytes()),
+          publicKey: const HexEncoder().convert(keyAddress.publicKey.toBytes()),
+          address: keyAddress.address,
+          blockchain: blockchain,
+          balance: balance.balance!,
+        );
+        print({
+          'private key',
+          const HexEncoder().convert(keyAddress.privateKey.toBytes())
+        });
+        print({
+          'public key',
+          const HexEncoder().convert(keyAddress.publicKey.toBytes())
+        });
+        print({'balance', balance.balance});
+        return wallet;
+      } else {
+        throw Exception('${balanceResponse.body}');
+      }
+    } on Exception catch (e) {
+      throw Exception('ERROR : ${e.toString()}');
+    }
   }
 
   // @POST("/v1/balance")
-  Future<int> fetchWalletBalance(String walletAddress) async {
+  Future<int> fetchWalletBalance(Wallet activeWallet) async {
+    print({"Checking balance for wallet:", activeWallet.address});
     String add =
         'xch1qpv3r5qt6e4q0vf7l2tkjqdh52txwrczmsn3rx4l7ytr6qz0lwcse4lcge';
     try {
       final responseData = await http.get(
         Uri.parse(
-            'http://162.213.248.37:8000/v1/blockchain/xch/address/$add/balance'),
+            'http://162.213.248.37:8081/v1/blockchain/${activeWallet.blockchain.ticker}/address/${activeWallet.address}/balance'),
       );
 
       if (responseData.statusCode == 200) {
@@ -158,12 +235,11 @@ class WalletService extends ApiService {
   }
 
   // @GET("/v1/transactions")
-  Future<TransactionsGroup> fetchWalletTransactions(
-      String walletAddress) async {
+  Future<TransactionsGroup> fetchWalletTransactions(Wallet activeWallet) async {
     try {
       final transactionsData = await http.post(
         Uri.parse(
-            'http://162.213.248.37:8000/v1/blockchain/xch/address/$walletAddress/transactions'),
+            'http://162.213.248.37:8001/v1/blockchain/xch/address/${activeWallet.address}/transactions'),
       );
 
       if (transactionsData.statusCode == 200) {
@@ -184,12 +260,12 @@ class WalletService extends ApiService {
                 address: ((t.sender != null) ? t.sender! : t.destination!),
                 amount: t.amount,
                 fee: transactions.fee!,
-                baseAddress: walletAddress);
+                baseAddress: activeWallet.address);
             transactionsList.add(transaction);
           }
         }
         return TransactionsGroup(
-            address: walletAddress, transactionsList: transactionsList);
+            address: activeWallet.address, transactionsList: transactionsList);
       } else {
         throw Exception('${transactionsData.body}');
       }
@@ -213,8 +289,9 @@ class WalletService extends ApiService {
     // await fetchBlockchainInfo();
     try {
       LocalSigner localSigner = LocalSigner();
-      signedTransactionResponse = await localSigner.usePrivateKeyToGenerateHash(
-          '5fc21f77352cda508a3a3fd06f5676e8226a93fb1da99b7f0a35a29b7166c93b');
+      signedTransactionResponse = localSigner.usePrivateKeyToGenerateHash(
+          '5fc21f77352cda508a3a3fd06f5676e8226a93fb1da99b7f0a35a29b7166c93b',
+          ticker);
     } on Exception catch (e) {
       throw Exception('ERROR : ${e.toString()}');
     }
@@ -223,7 +300,7 @@ class WalletService extends ApiService {
     try {
       final responseData = await http.get(
         Uri.parse(
-            'http://162.213.248.37:8000/v1/blockchain/xch/address/$add/utxos'),
+            'http://162.213.248.37:8001/v1/blockchain/$ticker/address/$add/utxos'),
       );
 
       print({'mine', jsonDecode(responseData.body)});
@@ -259,8 +336,9 @@ class WalletService extends ApiService {
         List<JacobianPoint> signatures = [];
         List<Map<String, dynamic>> spends = [];
         var target = true;
-        var receiverAddress =
-            'xch1a5vu46axpyzl554y3ku8sredpv74r0smjk6nlmqjmmud8jjq9zzqrr7agt';
+        var receiverAddress = address.isEmpty
+            ? 'xch1a5vu46axpyzl554y3ku8sredpv74r0smjk6nlmqjmmud8jjq9zzqrr7agt'
+            : address;
         var destinationHash = segwit.decode(receiverAddress).program;
 
         for (var record in spendRecords) {
@@ -312,7 +390,7 @@ class WalletService extends ApiService {
         print(jsonEncode(body));
         try {
           final responseData = await http.post(
-              Uri.parse('http://162.213.248.37:8000/v1/blockchain/xch/send'),
+              Uri.parse('http://162.213.248.37:8001/v1/blockchain/xch/send'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -326,6 +404,7 @@ class WalletService extends ApiService {
           // } else {
           //   return responseData.body;
           // }
+          return 'SUCCESS';
         } on Exception catch (e) {
           return e.toString();
         }
@@ -371,5 +450,20 @@ class WalletService extends ApiService {
     } on Exception catch (e) {
       throw Exception('ERROR : ${e.toString()}');
     }
+  }
+
+  Future<double> getChiaUSDPRice() async {
+    final xchange =
+        await http.get(Uri.parse('https://xchscan.com/api/chia-price'));
+    if (xchange.statusCode == 200) {
+      var usd_chia = USDChia.fromJson(xchange.body);
+      print('successful, the usd to chia price is: $usd_chia');
+      print('chia is usd is: ${usd_chia.usd}');
+      return usd_chia.usd;
+    }
+    print('failed to convert successfully');
+    print(xchange.body);
+
+    return 0.0;
   }
 }

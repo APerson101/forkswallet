@@ -23,7 +23,8 @@ class TestClass extends StatelessWidget {
           child: Column(
             children: [
               ElevatedButton(
-                  onPressed: () => createmodel.createNewWallet(),
+                  onPressed: () => {},
+                  // createmodel.createNewWallet(coin: coin),
                   child: Text("create address")),
               // ElevatedButton(
               //     onPressed: () => model.createNewWallet(supported_forks.xch),
@@ -117,7 +118,7 @@ class TestClass extends StatelessWidget {
                   child: TextField(
                       onChanged: (newtext) =>
                           recovermodel.setTwelfthPassword(newtext),
-                      decoration: InputDecoration())),
+                      decoration: const InputDecoration())),
               ElevatedButton(
                   onPressed: () {
                     recovermodel.concatenatePasswords();
@@ -126,7 +127,7 @@ class TestClass extends StatelessWidget {
                   child: Text("recover")),
               ElevatedButton(
                   onPressed: () {
-                    sender.getBalance();
+                    // sender.getBalance(act);
                   },
                   child: Text("Get Balance")),
               ElevatedButton(

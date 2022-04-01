@@ -1,4 +1,4 @@
-package com.digitalfarminginitiative.arbor
+package com.chiawallet.garden
 
 import io.flutter.embedding.android.FlutterActivity
 

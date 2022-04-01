@@ -35,8 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (int index = 0; index < walletBox.length; index++) {
       Wallet existingWallet = walletBox.getAt(index);
-      int newBalance =
-          await walletService.fetchWalletBalance(existingWallet.address);
+      int newBalance = await walletService.fetchWalletBalance(existingWallet);
 
       Wallet newWallet = Wallet(
         name: existingWallet.name,

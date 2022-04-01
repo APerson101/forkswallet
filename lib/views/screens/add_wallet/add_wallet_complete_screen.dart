@@ -77,7 +77,7 @@ class AddWalletCompleteScreen extends StatelessWidget {
                   title: 'I wrote down the secret phrase',
                   onPressed: () {
                     ForksDashboardController _control = Get.find();
-                    _control.reloadWalletBalances();
+                    // _control.reloadWalletBalances();
                     Get.back();
                     Navigator.pushReplacement(
                       context,

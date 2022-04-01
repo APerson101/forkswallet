@@ -14,7 +14,7 @@ import 'home_screen.dart';
 
 class ForksDashboard extends StatelessWidget {
   ForksDashboard({Key? key}) : super(key: key);
-  ForksDashboardController controller = Get.put(ForksDashboardController());
+  ForksDashboardController controller = Get.put(ForksDashboardController(null));
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,8 @@ class ForksSummartView extends StatelessWidget {
                       ),
                     )),
             body: RefreshIndicator(
-                onRefresh: () => controller.reloadWalletBalances(),
+                onRefresh: () => Future.value(null),
+                // onRefresh: () => controller.reloadWalletBalances(),
                 strokeWidth: 2.5,
                 child: Obx(() {
                   List<List> differentForks = controller.differentForks;

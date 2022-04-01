@@ -1,6 +1,7 @@
 import 'package:arbor/api/services.dart';
 import 'package:arbor/core/constants/asset_paths.dart';
 import 'package:arbor/core/enums/status.dart';
+import 'package:arbor/core/enums/supported_blockchains.dart';
 import 'package:arbor/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +11,15 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../constants/hive_constants.dart';
 
 class RestoreWalletProvider extends ChangeNotifier {
-  // Box box = Hive.box(HiveConstants.walletBox);
+  Box box = Hive.box(HiveConstants.walletBox);
   CrossFadeState currentState = CrossFadeState.showFirst;
   Status recoverWalletStatus = Status.SUCCESS;
   QRViewController? controller;
   final walletService = WalletService();
   String bip39words = '';
   List<String> bipList = [];
+
+  String words = '';
 
   bool get firstBatchButtonIsDisabled =>
       _password1IsCorrect &&
@@ -425,20 +428,24 @@ class RestoreWalletProvider extends ChangeNotifier {
     });
   }
 
-  recoverWallet({string: String}) async {
+  Future recoverWallet({enteredString: String}) async {
     recoverWalletStatus = Status.LOADING;
     notifyListeners();
     try {
+      print("tryign to do it here");
+
       recoveredWallet = await walletService.recoverWallet(
-        '${string.toLowerCase()}',
-      );
-      print('${recoveredWallet.toString()}');
-      // box.add(recoveredWallet);
+          words.toLowerCase(), supported_forks.xch);
+      if (recoveredWallet != null) {
+        recoveredWallet!;
+        box.add(recoveredWallet);
+        return recoveredWallet;
+      }
     } on Exception catch (e) {
       print('Recover Wallet Error: ${e.toString()}');
       recoverWalletStatus = Status.ERROR;
       notifyListeners();
-      return;
+      return null;
     }
     recoverWalletStatus = Status.SUCCESS;
     notifyListeners();

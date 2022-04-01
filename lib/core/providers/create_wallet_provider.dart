@@ -5,10 +5,11 @@ import 'package:arbor/core/enums/supported_blockchains.dart';
 import 'package:arbor/core/models/phrase.dart';
 import 'package:arbor/models/models.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 class CreateWalletProvider {
-  // Box box = Hive.box(HiveConstants.walletBox);
+  Box box = Hive.box(HiveConstants.walletBox);
   Status createWalletStatus = Status.IDLE;
   final walletService = WalletService();
   Wallet? newWallet;
@@ -47,26 +48,26 @@ class CreateWalletProvider {
   bool _tappedRevealButton = false;
   bool get tappedRevealButton => _tappedRevealButton;
 
-  createNewWallet() async {
+  createNewWallet({required supported_forks coin}) async {
     // createWalletStatus = Status.LOADING;
     // _appBarTitle = 'Generating';
     // notifyListeners();
     var wtch = Stopwatch();
     wtch.start();
-    await compute(walletService.createNewWallet, supported_forks.xch);
+    // await compute(walletService.createNewWallet, supported_forks.xch);
     print({'iiss', wtch.elapsed});
 
     try {
-      // newWallet =
-      // compute(walletService.createNewWallet, supported_forks.xch);
-      // seedPhrase = newWallet!.phrase;
-      // _wordsList = seedPhrase.split(' ').toList();
+      newWallet = await compute(walletService.createNewWallet, coin);
+      seedPhrase = newWallet!.phrase;
+      _wordsList = seedPhrase.split(' ').toList();
 
-      // for (int i = 0; i < _wordsList.length; i++) {
-      //   _phrasesList.add(Phrase(index: i, phrase: _wordsList[i]));
-      // }
+      for (int i = 0; i < _wordsList.length; i++) {
+        _phrasesList.add(Phrase(index: i, phrase: _wordsList[i]));
+      }
 
-      // box.add(newWallet);
+      box.add(newWallet);
+      return newWallet;
     } on Exception catch (e) {
       debugPrint('Create Wallet Error: ${e.toString()} ${e.runtimeType}');
 

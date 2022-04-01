@@ -45,21 +45,21 @@ class _TransactionsSheetState extends State<TransactionsSheet> {
   }
 
   Future<void> _updateTransactions({int delayInSeconds = 0}) async {
-    Future.delayed(Duration(seconds: delayInSeconds), () async {
-      setState(() {
-        _fetchingTransactions = true;
-      });
-      transactionsGroupModel =
-          await walletService.fetchWalletTransactions(walletAddress);
+    // Future.delayed(Duration(seconds: delayInSeconds), () async {
+    //   setState(() {
+    //     _fetchingTransactions = true;
+    //   });
+    //   transactionsGroupModel =
+    //       await walletService.fetchWalletTransactions(walletAddress);
 
-      if (transactionsBox.containsKey(walletAddress)) {
-        transactionsBox.delete(walletAddress);
-      }
-      transactionsBox.put(walletAddress, transactionsGroupModel);
-      setState(() {
-        _fetchingTransactions = false;
-      });
-    });
+    //   if (transactionsBox.containsKey(walletAddress)) {
+    //     transactionsBox.delete(walletAddress);
+    //   }
+    //   transactionsBox.put(walletAddress, transactionsGroupModel);
+    //   setState(() {
+    //     _fetchingTransactions = false;
+    //   });
+    // });
   }
 
   @override

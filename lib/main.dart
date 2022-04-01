@@ -1,14 +1,8 @@
 import 'dart:convert';
 
-import 'package:arbor/core/constants/arbor_constants.dart';
-import 'package:arbor/core/constants/arbor_colors.dart';
 import 'package:arbor/core/providers/restore_wallet_provider.dart';
 import 'package:arbor/core/providers/settings_provider.dart';
 import 'package:arbor/models/models.dart';
-import 'package:arbor/test.dart';
-import 'package:arbor/themes/theme_controller.dart';
-import 'package:arbor/views/screens/base/base_screen.dart';
-import 'package:arbor/views/screens/forks_selector/fork_selector.dart';
 import 'package:arbor/views/screens/no_encryption_available_sccreen.dart';
 import 'package:arbor/core/providers/send_crypto_provider.dart';
 import 'package:flutter/material.dart';
@@ -17,23 +11,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants/hive_constants.dart';
 import 'core/providers/create_wallet_provider.dart';
-import 'models/blockchain.dart';
 import 'models/transaction.dart';
-import 'models/wallet.dart';
 import 'testwo.dart';
-import 'themes/arbor_theme_data.dart';
 import 'views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'views/screens/on_boarding/splash_screen.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProviderScope(child: MyApp()));
-  return;
+  // runApp(ProviderScope(child: MyApp()));
   await Hive.initFlutter();
+  // return;
 
   try {
     final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -74,13 +63,12 @@ main() async {
           ),
         );
       }
-
-      runApp(MyApp());
+      runApp(ProviderScope(child: MyApp()));
     } else {
       return runApp(
         GetMaterialApp(
           theme: ThemeData.dark(),
-          home: NoEncryptionAvailableScreen(
+          home: const NoEncryptionAvailableScreen(
             message:
                 'We were unable to retrieve the encrypted keys to open your wallets. Please contact us.',
             errorString: ' ',
@@ -108,87 +96,83 @@ final createWalletProvider = Provider((ref) => CreateWalletProvider());
 final restoreWalletProvider = Provider((ref) => RestoreWalletProvider());
 final sendCryptoProvider = Provider((ref) => SendCryptoProvider());
 final settingsProvider = Provider((ref) => SettingsProvider());
+final allWalletsController = Provider((rf) => ForksController());
 
 void _hiveAdaptersRegistration() {
   Hive.registerAdapter(WalletAdapter());
   Hive.registerAdapter(BlockchainAdapter());
   Hive.registerAdapter(TransactionsGroupAdapter());
-  //Hive.registerAdapter(TransactionGroupAdapter());
   Hive.registerAdapter(TransactionAdapter());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+class MyApp extends ConsumerWidget {
+  final firstTimeUser =
+      FutureProvider((ref) => Hive.box(HiveConstants.walletBox).length > 0);
 
-class _MyAppState extends State<MyApp> {
-  Future<bool> _isFirstTimeUser() async {
-    bool _isFirstTime;
-    final prefs = await SharedPreferences.getInstance();
-    _isFirstTime =
-        (prefs.getBool(ArborConstants.IS_FIRST_TIME_USER_KEY) ?? true);
-    return Future<bool>.value(_isFirstTime);
-  }
+  // Future<bool> _isFirstTimeUser() async {
+  //   bool _isFirstTime;
+  //   // final prefs = await SharedPreferences.getInstance();
+  //   _isFirstTime = Hive.box(HiveConstants.walletBox).length > 0;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  //   // _isFirstTime =
+  //   //     (prefs.getBool(ArborConstants.IS_FIRST_TIME_USER_KEY) ?? true);
 
-  Future<bool> loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    var status = prefs.getBool('theme');
-    print({'the theme is ', status});
-    var theme = status ?? false;
-    return theme;
-  }
+  //   print({'new user status is : ', _isFirstTime});
+  //   return Future<bool>.value(_isFirstTime);
+  // }
 
   @override
-  void dispose() {
-    // Closes all Hive boxes
-    Hive.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ScreenUtilInit(builder: () {
-      return FutureBuilder<bool>(
-          future: loadTheme(),
-          builder: (context, theme) {
-            return GetMaterialApp(
-                initialBinding:
-                    // BindingsBuilder(() => Get.lazyPut(() => ThemeController())),
-                    BindingsBuilder(() {
-                  Get.lazyPut(() => ForksDashboardController());
-                  Get.lazyPut(() => ThemeController());
-                }),
-                theme: ThemeData.dark(),
-                debugShowCheckedModeBanner: false,
-                home: FutureBuilder<bool>(
-                    future: _isFirstTimeUser(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        bool _isFirstTime = snapshot.data as bool;
-                        if (_isFirstTime) {
-                          return TestTwo();
+      return GetMaterialApp(
+          theme: ThemeData.dark(),
+          debugShowCheckedModeBanner: false,
+          home: ref.watch(firstTimeUser).when(
+            data: (status) {
+              if (status) {
+                print('status of new user: $status');
+                return TestTwo(
+                  previousPage: 'main',
+                );
+              } else {
+                print('Status has changed');
 
-                          return SplashScreen();
-                        } else {
-                          return TestTwo();
+                return SplashScreen();
+              }
+            },
+            error: (Object error, StackTrace? stackTrace) {
+              return Center(
+                child: Text(stackTrace.toString()),
+              );
+            },
+            loading: () {
+              print("loaidng");
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            },
+          ));
+      // return GetMaterialApp(
+      //     theme: ThemeData.dark(),
+      //     debugShowCheckedModeBanner: false,
+      //     home: FutureBuilder<bool>(
+      //         future: _isFirstTimeUser(),
+      //         builder: (context, snapshot) {
+      //           if (snapshot.hasData) {
+      //             bool _isFirstTime = snapshot.data as bool;
+      //             if (!_isFirstTime) {
+      //               // return TestTwo();
 
-                          return BaseScreen();
-                        }
-                      } else {
-                        return Container(
-                            // color: ArborColors.green,
-                            );
-                      }
-                    }));
-          });
+      //               return SplashScreen();
+      //             } else {
+      //               // return BaseScreen();
+      //             }
+      //           } else {
+      //             return Container(
+      //                 // color: ArborColors.green,
+      //                 );
+      //           }
+      //         }));
     });
   }
 }

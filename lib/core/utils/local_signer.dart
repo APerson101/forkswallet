@@ -15,10 +15,10 @@ class LocalSigner {
     return mnemonic;
   }
 
-  WalletKeysAndAddress convertMnemonicToKeysAndAddress(String mnemonic) {
+  WalletKeysAndAddress convertMnemonicToKeysAndAddress(Map map) {
     var wtch = Stopwatch();
     wtch.start();
-    var seed = mnemonicToSeed(mnemonic);
+    var seed = mnemonicToSeed(map['mnemonic']);
     print(wtch.elapsed);
     var privateKey = PrivateKey.fromSeed(seed);
     print(wtch.elapsed);
@@ -32,19 +32,20 @@ class LocalSigner {
     var puzzleHash = puzzle.hash();
     print(wtch.elapsed);
 
-    var address = segwit.encode(Segwit('xch', puzzleHash));
+    var address = segwit.encode(Segwit(map['ticker'], puzzleHash));
     print(wtch.elapsed);
     wtch.stop();
     return WalletKeysAndAddress(address, privateKey, publicKey);
   }
 
-  SignedTransactionResponse usePrivateKeyToGenerateHash(String privateKey) {
+  SignedTransactionResponse usePrivateKeyToGenerateHash(
+      String privateKey, String ticker) {
     var privateKeyObject = PrivateKey.fromBytes(
         Uint8List.fromList(const HexDecoder().convert(privateKey)));
     var publicKeyObject = privateKeyObject.getG1();
     var wallet = walletPuzzle.curry([Program.atom(publicKeyObject.toBytes())]);
     var puzzleHash = wallet.hash();
-    var address = segwit.encode(Segwit('xch', puzzleHash));
+    var address = segwit.encode(Segwit(ticker, puzzleHash));
 
     return SignedTransactionResponse(
         wallet, privateKeyObject, puzzleHash, address);

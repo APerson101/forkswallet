@@ -1,25 +1,28 @@
 import 'package:arbor/core/providers/restore_wallet_provider.dart';
 import 'package:arbor/main.dart';
+import 'package:arbor/testwo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+
+import 'models/wallet.dart';
 
 final restorePod = FutureProvider((ref) async {
-  final watcher = ref.watch(restoreWalletProvider);
-  await watcher.recoverWallet();
+  final watcher = ref.watch(restoreWalletProvider).recoverWallet();
+  // final Wallet stuff = await watcher.recoverWallet().then((value) => value);
   return watcher;
 });
 
 class ImportWalletView extends ConsumerWidget {
-  ImportWalletView({Key? key}) : super(key: key);
-
-  RxString keyPhrase = ''.obs;
+  final String previousPage;
+  ImportWalletView({Key? key, required this.previousPage}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final watchman = ref.watch(restoreWalletProvider);
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
             leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -42,7 +45,7 @@ class ImportWalletView extends ConsumerWidget {
               child: TextField(
                 // inputFormatters: [PhrasesText()],
                 onChanged: (text) {
-                  keyPhrase.value = text;
+                  watchman.words = text;
                 },
                 decoration:
                     const InputDecoration(hintText: 'abcd efgh ijkl mnop'),
@@ -56,18 +59,20 @@ class ImportWalletView extends ConsumerWidget {
                   child: Text("Cancel"),
                   style: ElevatedButton.styleFrom(
                       shape: StadiumBorder(), minimumSize: Size(150, 60))),
-              Obx(() {
-                bool val = keyPhrase.value.isEmpty;
-                return ElevatedButton(
-                    onPressed: () async {
-                      MaterialPageRoute(builder: (contex) => StatusScreen());
-                      // provider.concatenatePasswords();
-                      // provider.recoverWallet(string: keyPhrase.value);
-                    },
-                    child: Text("Continue"),
-                    style: ElevatedButton.styleFrom(
-                        shape: StadiumBorder(), minimumSize: Size(150, 60)));
-              }),
+              ElevatedButton(
+                  onPressed: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StatusScreen(
+                                  previousPage: previousPage,
+                                )));
+                    // provider.concatenatePasswords();
+                    // provider.recoverWallet(string: keyPhrase.value);
+                  },
+                  child: const Text("Continue"),
+                  style: ElevatedButton.styleFrom(
+                      shape: StadiumBorder(), minimumSize: Size(150, 60)))
             ],
           )
         ]));
@@ -75,22 +80,34 @@ class ImportWalletView extends ConsumerWidget {
 }
 
 class StatusScreen extends ConsumerWidget {
-  StatusScreen({Key? key}) : super(key: key);
+  String previousPage;
+  StatusScreen({Key? key, required this.previousPage}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(restorePod).when(
         data: (data) {
           //wallet added success page
-          return Column(
+          ref.watch(boxLoader.notifier).setCurrentWallet(data, -1);
+          return Scaffold(
+              body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text("Wallet added successfully"),
-              Text(data.recoveredWallet!.address),
+              const Text("Wallet added successfully"),
+              Text("Address: ${data.address}"),
               ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("proceed"))
+                  onPressed: () async {
+                    previousPage == 'splash'
+                        ? Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TestTwo(previousPage: previousPage)))
+                        : Navigator.of(context).pop();
+                  },
+                  child: const Text("proceed"))
             ],
-          );
+          ));
         },
         error: (err, st) => const Center(child: Text("Failed to Load")),
         loading: () => const Center(
