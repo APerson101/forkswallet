@@ -5,6 +5,7 @@ import 'package:arbor/views/screens/add_wallet/add_wallet_status_screen.dart';
 import 'package:arbor/views/screens/forks_selector/fork_selector.dart';
 import 'package:arbor/views/widgets/cards/option_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../restore_wallet/input_password_screen.dart';
@@ -14,12 +15,13 @@ class AddWalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CreateWalletProvider>(builder: (_, model, __) {
       return Container(
-        // color: ArborColors.green,
+        color: Get.theme.backgroundColor,
         child: SafeArea(
           child: Scaffold(
             // backgroundColor: ArborColors.green,
             appBar: AppBar(
-                // backgroundColor: ArborColors.green,
+                backgroundColor: Get.theme.backgroundColor,
+              elevation: 0,
                 centerTitle: true,
                 title: Text(
                   'Add Wallet',

@@ -5,6 +5,7 @@ import 'package:arbor/core/providers/send_crypto_provider.dart';
 import 'package:arbor/views/widgets/arbor_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class StatusScreen extends StatelessWidget {
@@ -12,11 +13,12 @@ class StatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SendCryptoProvider>(builder: (_, model, __) {
       return Container(
-        color: ArborColors.green,
+        color: Get.theme.backgroundColor,
         child: SafeArea(
           child: Scaffold(
             backgroundColor: ArborColors.green,
             appBar: AppBar(
+              elevation: 0,
               centerTitle: true,
               title: Text(
                 '${model.appBarTitle}',
@@ -34,7 +36,7 @@ class StatusScreen extends StatelessWidget {
                       ),
                     )
                   : null,
-              backgroundColor: ArborColors.green,
+              backgroundColor: Get.theme.backgroundColor,
             ),
             body: Container(
               padding: EdgeInsets.all(40),
@@ -134,7 +136,9 @@ class StatusScreen extends StatelessWidget {
             fontSize: 18,
           ),
         ),
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         Text(
           'Transactions may take up to 2 minutes to show up in your wallet.',
           style: TextStyle(
@@ -236,13 +240,12 @@ class StatusScreen extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(
-                8,
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  8,
+                ),
               ),
-            ),
-            color: ArborColors.lightGreen.withOpacity(0.3)
-          ),
+              color: ArborColors.lightGreen.withOpacity(0.3)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

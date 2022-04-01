@@ -4,10 +4,9 @@ import 'package:arbor/views/screens/restore_wallet/input_password_final_screen.d
 import 'package:arbor/views/widgets/layout/hide_keyboard_container.dart';
 import 'package:arbor/views/widgets/password_box.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '/views/widgets/arbor_button.dart';
-
-import '../../../core/constants/arbor_colors.dart';
 import 'package:flutter/material.dart';
 
 class InputPasswordScreen extends StatelessWidget {
@@ -20,66 +19,71 @@ class InputPasswordScreen extends StatelessWidget {
             model.setBip39Words();
           }
         });
-        return Scaffold(
-          // backgroundColor: ArborColors.green,
-          appBar: AppBar(
-            // backgroundColor: ArborColors.green,
-            centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                if (model.currentState == CrossFadeState.showFirst) {
-                  model.clearErrorMessages();
-                  Navigator.pop(context);
-                } else {
-                  model.back();
-                }
-              },
-              icon: Icon(Icons.arrow_back),
-            ),
-            title: Text(
-              'Restore Wallet',
-              style: TextStyle(
-                  // color: ArborColors.white,
-                  ),
-            ),
-          ),
-          body: HideKeyboardContainer(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 20),
-                    child: Text(
-                      'Type your 12-word password to restore your existing wallet',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        // color: ArborColors.white,
+        return Container(
+          color: Get.theme.backgroundColor,
+          child: SafeArea(
+            child: Scaffold(
+              // backgroundColor: ArborColors.green,
+              appBar: AppBar(
+                backgroundColor: Get.theme.backgroundColor,
+                centerTitle: true,
+                leading: IconButton(
+                  onPressed: () {
+                    if (model.currentState == CrossFadeState.showFirst) {
+                      model.clearErrorMessages();
+                      Navigator.pop(context);
+                    } else {
+                      model.back();
+                    }
+                  },
+                  icon: Icon(Icons.arrow_back),
+                ),
+                title: Text(
+                  'Restore Wallet',
+                  style: TextStyle(
+                      // color: ArborColors.white,
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
+                ),
+              ),
+              body: HideKeyboardContainer(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 20),
+                        child: Text(
+                          'Type your 12-word password to restore your existing wallet',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            // color: ArborColors.white,
+                          ),
+                        ),
                       ),
-                      children: [
-                        AnimatedCrossFade(
-                          firstChild: firstChild(context, model),
-                          secondChild: secondChild(context, model),
-                          crossFadeState: model.currentState,
-                          duration: const Duration(milliseconds: 300),
+                      Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          children: [
+                            AnimatedCrossFade(
+                              firstChild: firstChild(context, model),
+                              secondChild: secondChild(context, model),
+                              crossFadeState: model.currentState,
+                              duration: const Duration(milliseconds: 300),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

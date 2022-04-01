@@ -17,11 +17,13 @@ class AddWalletStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CreateWalletProvider>(builder: (_, model, __) {
       return Container(
-        // color: ArborColors.green,
+        color: Get.theme.backgroundColor,
         child: SafeArea(
           child: Scaffold(
             // backgroundColor: ArborColors.green,
             appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Get.theme.backgroundColor,
               centerTitle: true,
               title: Text(
                 '${model.appBarTitle}',

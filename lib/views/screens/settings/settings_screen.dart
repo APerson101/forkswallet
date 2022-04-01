@@ -37,34 +37,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Consumer<SettingsProvider>(builder: (_, model, __) {
       return Container(
         height: MediaQuery.of(context).size.height,
-        color: ArborColors.green,
+        color: Get.theme.backgroundColor,
         child: SafeArea(
           child: Scaffold(
-            // backgroundColor: ArborColors.green,
-            /*appBar: AppBar(
-                backgroundColor: ArborColors.green,
-                centerTitle: true,
-                title: Text(
-                  'Settings',
-                  style: TextStyle(
-                    color: ArborColors.white,
-                  ),
-                ),
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: ArborColors.white,
-                  ),
-                )),*/
             body: Container(
-              height: MediaQuery.of(context).size.height,
               margin: EdgeInsets.symmetric(vertical: 16),
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: ListView(
@@ -84,20 +65,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           height: 4,
                         ),
                         settingsItem(
-                          title: "Visit DFI Discord Channel",
+                          title: "Join Discord Channel",
                           assetPath: AssetPaths.discord,
                           onPressed: () => model.launchURL(
                               url: ArborConstants.discordChannelURL),
                         ),
                         settingsItem(
-                          title: "View Privacy Policy",
+                          title: "Privacy Policy",
                           assetPath: AssetPaths.privacyPolicy,
                           onPressed: () => model.launchURL(
                               url: ArborConstants.websitePrivacyURL),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "Arbor Data",
+                          "Data",
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             // color: ArborColors.white,
@@ -108,14 +89,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           height: 4,
                         ),
                         settingsItem(
-                          title: "Delete Arbor Data",
+                          title: "Delete Wallet Data",
                           assetPath: AssetPaths.delete,
                           onPressed: () async {
                             await deleteData(model);
                           },
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                       ],
                     ),
@@ -155,6 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             borderRadius: BorderRadius.all(
               Radius.circular(8),
             ),
+            border: Border.all(color: Get.theme.backgroundColor)
           ),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -162,12 +144,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  width: 40,
-                  height: 30,
+                  width: 36,
+                  height: 36,
                   child: SvgPicture.asset(assetPath,
                       color: Get.isDarkMode ? Colors.white : Colors.black),
                 ),
-                SizedBox(width: 16),
+                SizedBox(width: 12),
                 Text(
                   "$title",
                   style: TextStyle(

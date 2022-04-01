@@ -93,7 +93,8 @@ class ArborDrawer extends StatelessWidget {
                             : Get.changeTheme(ThemeData(
                                 brightness: Brightness.light,
                                 primarySwatch: Colors.purple));
-                      }))
+                      }),
+              )
             ],
           ),
         ),

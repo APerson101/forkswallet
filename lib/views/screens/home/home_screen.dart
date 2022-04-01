@@ -1,7 +1,5 @@
 import 'package:arbor/api/services.dart';
 import 'package:arbor/models/models.dart';
-import 'package:arbor/core/constants/arbor_colors.dart';
-import 'package:arbor/views/screens/add_wallet/add_wallet_screen.dart';
 import 'package:arbor/views/screens/forks_selector/forks_dashboard_controller.dart';
 import 'package:arbor/views/screens/send/value_screen.dart';
 import 'package:arbor/views/screens/settings/settings_screen.dart';
@@ -95,9 +93,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Get.theme.backgroundColor,
       height: MediaQuery.of(context).size.height,
       child: SafeArea(
         child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Get.theme.backgroundColor,
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+              ),
+            ),
+            title: const Text(
+              '',
+            ),
+          ),
           body: RefreshIndicator(
             onRefresh: _reloadWalletBalances,
             strokeWidth: 2.5,

@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/src/provider.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 enum Forks { HDD, CryptoDoge, Chia }
@@ -22,16 +21,30 @@ class ForksSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container();
     return Consumer<CreateWalletProvider>(builder: (_, model, __) {
-      return Scaffold(
-          appBar: AppBar(
-              title: Text("Select Chia fork",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 3,
-                      fontSize: 20))),
-          body: SingleChildScrollView(
-            child: Center(child: _getChildren(context, model)),
-          ));
+      return Container(
+        color: Get.theme.backgroundColor,
+        child: SafeArea(
+          child: Scaffold(
+              appBar: AppBar(
+                  elevation: 0,
+                  backgroundColor: Get.theme.backgroundColor,
+                  centerTitle: true,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back),
+                  ),
+                  title: Text("Select Chia fork",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3,
+                          fontSize: 20))),
+              body: SingleChildScrollView(
+                child: Center(child: _getChildren(context, model)),
+              )),
+        ),
+      );
     });
   }
 
@@ -40,7 +53,7 @@ class ForksSelector extends StatelessWidget {
     ;
 
     items.add(SizedBox(
-      height: 50,
+      height: 10,
     ));
     // var forks = Forks.values.map((fork) {
     //   String logo = fork == Forks.DogeChia
@@ -57,6 +70,7 @@ class ForksSelector extends StatelessWidget {
         onTap: () async {
           // selectedFork.value = fork;
 
+<<<<<<< HEAD
           // model.clearAll();
           // // // //go to selector
           // model.createNewWallet(f);
@@ -98,6 +112,52 @@ class ForksSelector extends StatelessWidget {
     //           .paddingOnly(top: 10, bottom: 10, left: 20, right: 20));
     // }).toList();
     // items.addAll(forks);
+=======
+            model.clearAll();
+            // // //go to selector
+            model.createNewWallet(f);
+            var result = await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddWalletStatusScreen(),
+              ),
+            );
+            if (result == true) {
+              Navigator.pop(context);
+            }
+          },
+          child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                Container(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset(
+                          'assets/images/$logo',
+                          fit: BoxFit.contain,
+                          height: 40,
+                          width: 40,
+                        )
+                            .decorated(borderRadius: BorderRadius.circular(20))
+                            .paddingOnly(top: 16, bottom: 16))
+                    .paddingOnly(
+                  left: 16,
+                ),
+                Text(describeEnum(fork),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            fontSize: 16))
+                    .paddingAll(4)
+              ])
+              .decorated(
+                  color: Get.theme.dialogBackgroundColor,
+                  borderRadius: BorderRadius.circular(20))
+              .paddingOnly(top: 10, bottom: 10, left: 20, right: 20));
+    }).toList();
+    items.addAll(forks);
+>>>>>>> 16d19c4e62f5d1b135b7c8a01020e86a7468ae13
     // items.add(SizedBox.expand());
 
     // return items.toColumn(mainAxisAlignment: MainAxisAlignment.spaceEvenly);

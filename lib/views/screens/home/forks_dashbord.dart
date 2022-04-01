@@ -25,7 +25,7 @@ class ForksDashboard extends StatelessWidget {
           child: CircularProgressIndicator.adaptive(),
         ));
       } else if (controller.loadingStatus.value == DashLoadingStatus.success) {
-        return ForksSummartView();
+        return ForksSummaryView();
       } else if (controller.loadingStatus.value == DashLoadingStatus.empty) {
         return const Center(
           child: Text(
@@ -49,11 +49,12 @@ class ForksDashboard extends StatelessWidget {
 
 enum Forks { Flora, XFL, DogeChia, Flax, XFX }
 
-class ForksSummartView extends StatelessWidget {
+class ForksSummaryView extends StatelessWidget {
   ForksDashboardController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return SafeArea(
         child: Scaffold(
             floatingActionButton: FloatingActionButton(
@@ -100,31 +101,84 @@ class ForksSummartView extends StatelessWidget {
                                                 img_url,
                                                 fit: BoxFit.contain,
                                                 height: 50,
+=======
+    return Container(
+      color: Get.theme.backgroundColor,
+      height: MediaQuery.of(context).size.height,
+      child: SafeArea(
+          child: Scaffold(
+              floatingActionButton: FloatingActionButton(
+                backgroundColor: Get.theme.backgroundColor,
+                  child: const Icon(
+                    Icons.add,
+                  ),
+                  onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AddWalletScreen(),
+                        ),
+                      )),
+              body: RefreshIndicator(
+                  onRefresh: () => controller.reloadWalletBalances(),
+                  strokeWidth: 2.5,
+                  child: Obx(() {
+                    List<List> differentForks = controller.differentForks;
+                    return ListView(
+                      children: differentForks.map((e) {
+                        String imageLink = e.first.blockchain.logo;
+                        String img_url =
+                            ArborConstants.baseWebsiteURL + imageLink;
+                        String walletsamount = e.length > 1
+                            ? "${e.length} wallets"
+                            : "${e.length} wallet";
+                        return InkWell(
+                            onTap: () {
+                              controller.selectedFork.value =
+                                  e.first.blockchain.name;
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ));
+                            },
+                            child: Card(
+                                margin: EdgeInsets.only(left: 10, right: 10),
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 20),
+                                  child: Column(children: [
+                                    ListTile(
+                                            leading: Container(
+>>>>>>> 16d19c4e62f5d1b135b7c8a01020e86a7468ae13
                                                 width: 50,
-                                              ).decorated(
-                                                  shape: BoxShape.circle,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20))),
-                                          title: Text(
-                                              e[0]
-                                                  .blockchain
-                                                  .ticker
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  letterSpacing: 1,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold)),
-                                          subtitle: Text(
-                                              e.first.blockchain.name +
-                                                  '($walletsamount)'),
-                                          trailing: sum(e))
-                                      .padding(top: 5, bottom: 5),
-                                ]),
-                              ))).padding(top: 20, bottom: 20);
-                    }).toList(),
-                  );
-                }))));
+                                                height: 50,
+                                                child: Image.network(
+                                                  img_url,
+                                                  fit: BoxFit.contain,
+                                                  height: 50,
+                                                  width: 50,
+                                                ).decorated(
+                                                    shape: BoxShape.circle,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20))),
+                                            title: Text(
+                                                e[0]
+                                                    .blockchain
+                                                    .ticker
+                                                    .toUpperCase(),
+                                                style: const TextStyle(
+                                                    letterSpacing: 1,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),
+                                            subtitle: Text(
+                                                e.first.blockchain.name +
+                                                    '($walletsamount)'),
+                                            trailing: sum(e))
+                                        .padding(top: 5, bottom: 5),
+                                  ]),
+                                ))).padding(top: 20, bottom: 0);
+                      }).toList(),
+                    );
+                  }))),
+      ),
+    );
   }
 
   Widget sum(List elements) {
@@ -138,6 +192,6 @@ class ForksSummartView extends StatelessWidget {
             style: const TextStyle(
                 letterSpacing: 0.6,
                 fontWeight: FontWeight.bold,
-                fontSize: 16)));
+                fontSize: 18)));
   }
 }
